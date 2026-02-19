@@ -1,4 +1,4 @@
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '../../lib/prisma';
 import { NotFoundError, AuthorizationError } from '../../utils/errors';
 import bcrypt from 'bcryptjs';
 

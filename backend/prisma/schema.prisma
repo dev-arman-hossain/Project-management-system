@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -57,6 +57,8 @@ model Project {
   status      ProjectStatus @default(WIP)
   sheetUrl    String?
   sheetOption SheetOption   @default(NOT_PROVIDED)
+  startDate   DateTime      @default(now())
+  deadline    DateTime?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 

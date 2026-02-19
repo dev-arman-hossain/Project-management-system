@@ -1,4 +1,4 @@
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '../../lib/prisma';
 import { NotFoundError, AuthorizationError } from '../../utils/errors';
 import { ProjectStatus } from '@prisma/client';
 
@@ -13,6 +13,8 @@ export class ProjectService {
         createdById: string;
         sheetUrl?: string;
         sheetOption?: 'PROVIDED' | 'NOT_PROVIDED' | 'WILL_PROVIDE_LATER';
+        startDate?: string | Date;
+        deadline?: string | Date;
     }) {
         // Validate assigned user exists if provided
         if (data.assignedToId) {
@@ -33,6 +35,8 @@ export class ProjectService {
                 createdById: data.createdById,
                 sheetUrl: data.sheetUrl,
                 sheetOption: data.sheetOption,
+                startDate: data.startDate ? new Date(data.startDate) : undefined,
+                deadline: data.deadline ? new Date(data.deadline) : undefined,
             },
             include: {
                 assignedTo: {
@@ -141,6 +145,8 @@ export class ProjectService {
             assignedToId?: string;
             sheetUrl?: string;
             sheetOption?: 'PROVIDED' | 'NOT_PROVIDED' | 'WILL_PROVIDE_LATER';
+            startDate?: string | Date;
+            deadline?: string | Date;
         }
     ) {
         const project = await prisma.project.findUnique({
@@ -176,7 +182,11 @@ export class ProjectService {
 
         const updatedProject = await prisma.project.update({
             where: { id: projectId },
-            data,
+            data: {
+                ...data,
+                startDate: data.startDate ? new Date(data.startDate) : undefined,
+                deadline: data.deadline ? new Date(data.deadline) : undefined,
+            },
             include: {
                 assignedTo: {
                     select: {

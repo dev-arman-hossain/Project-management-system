@@ -1,9 +1,9 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import config from '../../config';
+import config from '../../config/index';
 import { AuthenticationError, ConflictError } from '../../utils/errors';
 import { JWTPayload } from '../../types/auth.types';
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '../../lib/prisma';
 
 export class AuthService {
     /**

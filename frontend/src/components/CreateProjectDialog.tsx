@@ -27,8 +27,10 @@ const projectSchema = z.object({
     title: z.string().min(3, 'Title must be at least 3 characters'),
     description: z.string().optional(),
     assignedToId: z.string().optional(),
-    sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']).default('NOT_PROVIDED'),
+    sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']),
     sheetUrl: z.string().url('Invalid Google Sheet URL').optional().or(z.literal('')),
+    startDate: z.string().min(1, 'Start date is required'),
+    deadline: z.string().optional(),
 });
 
 type ProjectForm = z.infer<typeof projectSchema>;
@@ -52,6 +54,7 @@ export default function CreateProjectDialog({ users, onClose, onSuccess }: Creat
         resolver: zodResolver(projectSchema),
         defaultValues: {
             sheetOption: 'NOT_PROVIDED',
+            startDate: new Date().toISOString().split('T')[0],
         }
     });
 
@@ -170,6 +173,37 @@ export default function CreateProjectDialog({ users, onClose, onSuccess }: Creat
                             )}
                         </div>
                     )}
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Start Date *
+                            </label>
+                            <input
+                                {...register('startDate')}
+                                type="date"
+                                id="startDate"
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                            />
+                            {errors.startDate && (
+                                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.startDate.message}</p>
+                            )}
+                        </div>
+                        <div>
+                            <label htmlFor="deadline" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Deadline
+                            </label>
+                            <input
+                                {...register('deadline')}
+                                type="date"
+                                id="deadline"
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                            />
+                            {errors.deadline && (
+                                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.deadline.message}</p>
+                            )}
+                        </div>
+                    </div>
 
                     <div className="flex gap-3 pt-4">
                         <button

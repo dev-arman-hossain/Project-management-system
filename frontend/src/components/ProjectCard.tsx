@@ -2,8 +2,8 @@
 
 import { Project } from '@/types';
 import { projectsAPI } from '@/lib/api';
-import { useState } from 'react';
-import { Clock, User, Trash2 } from 'lucide-react';
+import { Clock, User, Trash2, Calendar, Timer } from 'lucide-react';
+import { useEffect, useState, useMemo } from 'react';
 
 const statusColors = {
     WIP: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
@@ -46,6 +46,36 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project, onUpdate, isAdmin }: ProjectCardProps) {
     const [updating, setUpdating] = useState(false);
+    const [timeLeft, setTimeLeft] = useState<string>('');
+
+    const calculateTimeLeft = useMemo(() => {
+        return () => {
+            if (!project.deadline) return '';
+            const deadline = new Date(project.deadline).getTime();
+            const now = new Date().getTime();
+            const diff = deadline - now;
+
+            if (diff <= 0) return 'Overdue';
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+            return `${hours}h ${minutes}m ${seconds}s`;
+        };
+    }, [project.deadline]);
+
+    useEffect(() => {
+        if (!project.deadline) return;
+
+        const updateTimer = () => setTimeLeft(calculateTimeLeft());
+        updateTimer();
+
+        const interval = setInterval(updateTimer, 1000);
+        return () => clearInterval(interval);
+    }, [calculateTimeLeft, project.deadline]);
 
     const handleStatusChange = async (newStatus: string) => {
         try {
@@ -124,8 +154,20 @@ export default function ProjectCard({ project, onUpdate, isAdmin }: ProjectCardP
                 )}
 
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <Calendar className="w-4 h-4" />
+                    <span>Project Started: {new Date(project.startDate).toLocaleDateString()}</span>
+                </div>
+
+                {project.deadline && (
+                    <div className={`flex items-center gap-2 text-sm font-medium ${timeLeft === 'Overdue' ? 'text-red-600' : 'text-blue-600 dark:text-blue-400'}`}>
+                        <Timer className="w-4 h-4" />
+                        <span>Deadline: {timeLeft}</span>
+                    </div>
+                )}
+
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                     <Clock className="w-4 h-4" />
-                    <span>{new Date(project.updatedAt).toLocaleDateString()}</span>
+                    <span>Last Updated: {new Date(project.updatedAt).toLocaleDateString()}</span>
                 </div>
             </div>
 

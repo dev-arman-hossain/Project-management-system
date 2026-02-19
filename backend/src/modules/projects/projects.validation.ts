@@ -7,6 +7,8 @@ export const createProjectSchema = z.object({
         assignedToId: z.string().optional(),
         sheetUrl: z.string().url('Invalid Google Sheet URL').optional().or(z.literal('')),
         sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']).optional(),
+        startDate: z.string().datetime().optional().or(z.date().optional()),
+        deadline: z.string().datetime().optional().or(z.date().optional()),
     }),
 });
 
@@ -18,6 +20,8 @@ export const updateProjectSchema = z.object({
         assignedToId: z.string().optional(),
         sheetUrl: z.string().url('Invalid Google Sheet URL').optional().or(z.literal('')),
         sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']).optional(),
+        startDate: z.string().datetime().optional().or(z.date().optional()),
+        deadline: z.string().datetime().optional().or(z.date().optional()),
     }),
 });
 
