@@ -23,6 +23,21 @@ const statusLabels = {
     COMPLETED: 'Completed',
 };
 
+const GoogleSheetIcon = ({ className }: { className?: string }) => (
+    <svg
+        viewBox="0 0 24 24"
+        className={className}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" fill="#0F9D58" />
+        <path d="M14 2V8H20L14 2Z" fill="#B7E1CD" />
+        <path d="M8 13H16V15H8V13Z" fill="white" />
+        <path d="M8 17H16V19H8V17Z" fill="white" />
+        <path d="M8 9H11V11H8V9Z" fill="white" />
+    </svg>
+);
+
 interface ProjectCardProps {
     project: Project;
     onUpdate: () => void;
@@ -58,15 +73,40 @@ export default function ProjectCard({ project, onUpdate, isAdmin }: ProjectCardP
     return (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 hover:shadow-md transition">
             <div className="flex items-start justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{project.title}</h3>
-                {isAdmin && (
-                    <button
-                        onClick={handleDelete}
-                        className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition"
-                    >
-                        <Trash2 className="w-4 h-4" />
-                    </button>
-                )}
+                <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{project.title}</h3>
+                </div>
+                <div className="flex items-center gap-2">
+                    {project.sheetOption !== 'NOT_PROVIDED' && (
+                        project.sheetOption === 'PROVIDED' && project.sheetUrl ? (
+                            <a
+                                href={project.sheetUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
+                                title="Open Google Sheet"
+                            >
+                                <GoogleSheetIcon className="w-6 h-6" />
+                            </a>
+                        ) : (
+                            <div
+                                className="p-1"
+                                title="Sheet will be provided later"
+                            >
+                                <GoogleSheetIcon className="w-6 h-6 opacity-30 grayscale" />
+                            </div>
+                        )
+                    )}
+                    {isAdmin && (
+                        <button
+                            onClick={handleDelete}
+                            className="p-2 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 rounded-lg transition"
+                            title="Delete Project"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
+                    )}
+                </div>
             </div>
 
             {project.description && (

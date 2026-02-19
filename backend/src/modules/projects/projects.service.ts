@@ -11,6 +11,8 @@ export class ProjectService {
         description?: string;
         assignedToId?: string;
         createdById: string;
+        sheetUrl?: string;
+        sheetOption?: 'PROVIDED' | 'NOT_PROVIDED' | 'WILL_PROVIDE_LATER';
     }) {
         // Validate assigned user exists if provided
         if (data.assignedToId) {
@@ -29,6 +31,8 @@ export class ProjectService {
                 description: data.description,
                 assignedToId: data.assignedToId,
                 createdById: data.createdById,
+                sheetUrl: data.sheetUrl,
+                sheetOption: data.sheetOption,
             },
             include: {
                 assignedTo: {
@@ -135,6 +139,8 @@ export class ProjectService {
             description?: string;
             status?: ProjectStatus;
             assignedToId?: string;
+            sheetUrl?: string;
+            sheetOption?: 'PROVIDED' | 'NOT_PROVIDED' | 'WILL_PROVIDE_LATER';
         }
     ) {
         const project = await prisma.project.findUnique({

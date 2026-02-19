@@ -8,10 +8,27 @@ import { projectsAPI } from '@/lib/api';
 import { User } from '@/types';
 import { X } from 'lucide-react';
 
+const GoogleSheetIcon = ({ className }: { className?: string }) => (
+    <svg
+        viewBox="0 0 24 24"
+        className={className}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" fill="#0F9D58" />
+        <path d="M14 2V8H20L14 2Z" fill="#B7E1CD" />
+        <path d="M8 13H16V15H8V13Z" fill="white" />
+        <path d="M8 17H16V19H8V17Z" fill="white" />
+        <path d="M8 9H11V11H8V9Z" fill="white" />
+    </svg>
+);
+
 const projectSchema = z.object({
     title: z.string().min(3, 'Title must be at least 3 characters'),
     description: z.string().optional(),
     assignedToId: z.string().optional(),
+    sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']).default('NOT_PROVIDED'),
+    sheetUrl: z.string().url('Invalid Google Sheet URL').optional().or(z.literal('')),
 });
 
 type ProjectForm = z.infer<typeof projectSchema>;
@@ -29,10 +46,16 @@ export default function CreateProjectDialog({ users, onClose, onSuccess }: Creat
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors },
     } = useForm<ProjectForm>({
         resolver: zodResolver(projectSchema),
+        defaultValues: {
+            sheetOption: 'NOT_PROVIDED',
+        }
     });
+
+    const sheetOption = watch('sheetOption');
 
     const onSubmit = async (data: ProjectForm) => {
         try {
@@ -113,6 +136,40 @@ export default function CreateProjectDialog({ users, onClose, onSuccess }: Creat
                             ))}
                         </select>
                     </div>
+
+                    <div>
+                        <label htmlFor="sheetOption" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                            <GoogleSheetIcon className="w-5 h-5" />
+                            Google Sheet Option
+                        </label>
+                        <select
+                            {...register('sheetOption')}
+                            id="sheetOption"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                        >
+                            <option value="NOT_PROVIDED">No Sheet</option>
+                            <option value="PROVIDED">Provide Google Sheet</option>
+                            <option value="WILL_PROVIDE_LATER">Will Provide Sheet Later</option>
+                        </select>
+                    </div>
+
+                    {sheetOption === 'PROVIDED' && (
+                        <div>
+                            <label htmlFor="sheetUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Google Sheet URL *
+                            </label>
+                            <input
+                                {...register('sheetUrl')}
+                                type="url"
+                                id="sheetUrl"
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                                placeholder="https://docs.google.com/spreadsheets/d/..."
+                            />
+                            {errors.sheetUrl && (
+                                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.sheetUrl.message}</p>
+                            )}
+                        </div>
+                    )}
 
                     <div className="flex gap-3 pt-4">
                         <button

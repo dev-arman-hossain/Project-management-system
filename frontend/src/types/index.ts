@@ -24,9 +24,13 @@ export interface Project {
         name: string;
         email: string;
     };
+    sheetUrl?: string;
+    sheetOption: SheetOption;
     createdAt: string;
     updatedAt: string;
 }
+
+export type SheetOption = 'PROVIDED' | 'NOT_PROVIDED' | 'WILL_PROVIDE_LATER';
 
 export type ProjectStatus = 'WIP' | 'NRA' | 'DELIVERED' | 'REVISION' | 'CANCELED' | 'COMPLETED';
 

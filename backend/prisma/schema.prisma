@@ -44,11 +44,19 @@ model User {
   @@map("users")
 }
 
+enum SheetOption {
+  PROVIDED
+  NOT_PROVIDED
+  WILL_PROVIDE_LATER
+}
+
 model Project {
   id          String        @id @default(cuid())
   title       String
   description String?
   status      ProjectStatus @default(WIP)
+  sheetUrl    String?
+  sheetOption SheetOption   @default(NOT_PROVIDED)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
