@@ -28,7 +28,7 @@ const projectSchema = z.object({
     description: z.string().optional(),
     assignedToId: z.string().optional(),
     sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']),
-    sheetUrl: z.string().url('Invalid Google Sheet URL').optional().or(z.literal('')),
+    sheetUrl: z.string().optional().or(z.literal('')),
     startDate: z.string().min(1, 'Start date is required'),
     deadline: z.string().optional(),
 });

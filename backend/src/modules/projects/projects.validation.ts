@@ -5,10 +5,10 @@ export const createProjectSchema = z.object({
         title: z.string().min(3, 'Title must be at least 3 characters'),
         description: z.string().optional(),
         assignedToId: z.string().optional(),
-        sheetUrl: z.string().url('Invalid Google Sheet URL').optional().or(z.literal('')),
+        sheetUrl: z.string().optional().or(z.literal('')),
         sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']).optional(),
-        startDate: z.string().datetime().optional().or(z.date().optional()),
-        deadline: z.string().datetime().optional().or(z.date().optional()),
+        startDate: z.string().optional().or(z.date().optional()),
+        deadline: z.string().optional().or(z.date().optional()),
     }),
 });
 
@@ -18,10 +18,10 @@ export const updateProjectSchema = z.object({
         description: z.string().optional(),
         status: z.enum(['WIP', 'NRA', 'DELIVERED', 'REVISION', 'CANCELED', 'COMPLETED']).optional(),
         assignedToId: z.string().optional(),
-        sheetUrl: z.string().url('Invalid Google Sheet URL').optional().or(z.literal('')),
+        sheetUrl: z.string().optional().or(z.literal('')),
         sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']).optional(),
-        startDate: z.string().datetime().optional().or(z.date().optional()),
-        deadline: z.string().datetime().optional().or(z.date().optional()),
+        startDate: z.string().optional().or(z.date().optional()),
+        deadline: z.string().optional().or(z.date().optional()),
     }),
 });
 

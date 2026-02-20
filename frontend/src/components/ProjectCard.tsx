@@ -2,7 +2,7 @@
 
 import { Project } from '@/types';
 import { projectsAPI } from '@/lib/api';
-import { Clock, User, Trash2, Calendar, Timer } from 'lucide-react';
+import { Clock, User, Trash2, Calendar } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
 
 const statusColors = {
@@ -62,8 +62,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin }: ProjectCardP
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-            if (days > 0) return `${days}d ${hours}h ${minutes}m`;
-            return `${hours}h ${minutes}m ${seconds}s`;
+            return `${days}d ${hours}h ${minutes}m ${seconds}s`;
         };
     }, [project.deadline]);
 
@@ -98,6 +97,20 @@ export default function ProjectCard({ project, onUpdate, isAdmin }: ProjectCardP
         } catch (error) {
             console.error('Failed to delete project:', error);
         }
+    };
+
+    const getTimerStyles = () => {
+        if (!project.deadline) return '';
+        const diff = new Date(project.deadline).getTime() - Date.now();
+        const days = diff / (1000 * 60 * 60 * 24);
+
+        if (timeLeft === 'Overdue' || days <= 2) {
+            return 'bg-red-50 text-red-600 border border-red-100 dark:bg-red-900/20 dark:text-red-300 dark:border-red-900/30';
+        }
+        if (days <= 7) {
+            return 'bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-900/20 dark:text-amber-300 dark:border-amber-900/30';
+        }
+        return 'bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-900/30';
     };
 
     return (
@@ -145,52 +158,76 @@ export default function ProjectCard({ project, onUpdate, isAdmin }: ProjectCardP
                 </p>
             )}
 
-            <div className="space-y-3 mb-4">
-                {project.assignedTo && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <User className="w-4 h-4" />
-                        <span>{project.assignedTo.name}</span>
+            <div className="mt-4 space-y-4">
+                {/* Meta Dates Section */}
+                <div className="grid grid-cols-2 gap-4 pb-2">
+                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                        <Calendar className="w-5 h-5 text-gray-400 shrink-0" />
+                        <div className="flex flex-col">
+                            <span className="text-[10px] uppercase tracking-wider text-gray-500 font-medium">Started</span>
+                            <span className="text-sm font-semibold">{new Date(project.startDate).toLocaleDateString()}</span>
+                        </div>
                     </div>
-                )}
-
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                    <Calendar className="w-4 h-4" />
-                    <span>Project Started: {new Date(project.startDate).toLocaleDateString()}</span>
+                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                        <Clock className="w-4 h-4 opacity-70 shrink-0" />
+                        <div className="flex flex-col">
+                            <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Last Update</span>
+                            <span className="text-xs">{new Date(project.updatedAt).toLocaleDateString()}</span>
+                        </div>
+                    </div>
                 </div>
 
-                {project.deadline && (
-                    <div className={`flex items-center gap-2 text-sm font-medium ${timeLeft === 'Overdue' ? 'text-red-600' : 'text-blue-600 dark:text-blue-400'}`}>
-                        <Timer className="w-4 h-4" />
-                        <span>Deadline: {timeLeft}</span>
+                <hr className="border-gray-100 dark:border-gray-700/50" />
+
+                {/* Footer Management Section */}
+                <div className="pt-2 space-y-4">
+                    {project.assignedTo && (
+                        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 px-1">
+                            <User className="w-3.5 h-3.5" />
+                            <span>Assigned to: <span className="font-semibold text-gray-700 dark:text-gray-300">{project.assignedTo.name}</span></span>
+                        </div>
+                    )}
+
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between px-1">
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
+                                Project Status
+                            </label>
+                            <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusColors[project.status]}`}>
+                                {statusLabels[project.status]}
+                            </span>
+                        </div>
+                        <select
+                            value={project.status}
+                            onChange={(e) => handleStatusChange(e.target.value)}
+                            disabled={updating}
+                            className="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C/polyline%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.75rem_center] bg-no-repeat"
+                        >
+                            {Object.entries(statusLabels).map(([value, label]) => (
+                                <option key={value} value={value}>
+                                    {label}
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                )}
-
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                    <Clock className="w-4 h-4" />
-                    <span>Last Updated: {new Date(project.updatedAt).toLocaleDateString()}</span>
                 </div>
-            </div>
 
-            <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Status
-                </label>
-                <select
-                    value={project.status}
-                    onChange={(e) => handleStatusChange(e.target.value)}
-                    disabled={updating}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition disabled:opacity-50"
-                >
-                    {Object.entries(statusLabels).map(([value, label]) => (
-                        <option key={value} value={value}>
-                            {label}
-                        </option>
-                    ))}
-                </select>
-                <div className="flex items-center justify-center">
-                    <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${statusColors[project.status]}`}>
-                        {statusLabels[project.status]}
-                    </span>
+                {/* Deadline & Countdown Hero Section - Moved to Bottom */}
+                <div className="pt-4 mt-2 border-t border-gray-100 dark:border-gray-700/50">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-tight">Deadline</span>
+                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                            {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'Not set'}
+                        </span>
+                    </div>
+                    {project.deadline && (
+                        <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all shadow-sm ${getTimerStyles()}`}>
+                            <Clock className="w-6 h-6 opacity-80" />
+                            <span className="text-xl font-bold tracking-tighter tabular-nums">
+                                {timeLeft || 'Calculating...'}
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
