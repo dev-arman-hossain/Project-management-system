@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
     FolderKanban,
     CheckCircle,
@@ -9,9 +9,11 @@ import {
     XCircle,
     UserCheck,
     Calendar,
+    Plus,
 } from 'lucide-react';
 import { Project, User } from '@/types';
 import ProjectCard from './ProjectCard';
+import CreateProjectDialog from './CreateProjectDialog';
 
 interface MemberDashboardProps {
     user: User;
@@ -24,6 +26,8 @@ export default function MemberDashboard({
     projects,
     onProjectUpdated,
 }: MemberDashboardProps) {
+    const [showCreateProject, setShowCreateProject] = useState(false);
+
     // Filter projects assigned to this member
     const assignedProjects = useMemo(() => {
         return projects.filter((p) => p.assignedToId === user.id);
@@ -55,6 +59,18 @@ export default function MemberDashboard({
 
     return (
         <div className="space-y-8">
+            {/* Header with Add Button */}
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Member Dashboard</h2>
+                <button
+                    onClick={() => setShowCreateProject(true)}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition flex items-center gap-2"
+                >
+                    <Plus className="w-5 h-5" />
+                    + New Project
+                </button>
+            </div>
+
             {/* Overview Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
@@ -188,21 +204,19 @@ export default function MemberDashboard({
                                             </p>
                                             <div className="flex items-center gap-4 mt-2">
                                                 <span
-                                                    className={`text-xs font-medium px-2 py-1 rounded ${
-                                                        project.status === 'WIP'
+                                                    className={`text-xs font-medium px-2 py-1 rounded ${project.status === 'WIP'
                                                             ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                                                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {project.status}
                                                 </span>
                                                 {daysUntilDeadline !== null && (
                                                     <span
-                                                        className={`text-xs font-medium ${
-                                                            isUrgent
+                                                        className={`text-xs font-medium ${isUrgent
                                                                 ? 'text-red-600 dark:text-red-400'
                                                                 : 'text-gray-600 dark:text-gray-400'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {daysUntilDeadline > 0
                                                             ? `${daysUntilDeadline} days left`
@@ -254,6 +268,19 @@ export default function MemberDashboard({
                     </div>
                 )}
             </div>
+
+            {/* Dialogs */}
+            {showCreateProject && (
+                <CreateProjectDialog
+                    user={user}
+                    users={[]} // Members don't need to see other users to assign
+                    onClose={() => setShowCreateProject(false)}
+                    onSuccess={() => {
+                        setShowCreateProject(false);
+                        onProjectUpdated();
+                    }}
+                />
+            )}
         </div>
     );
 }

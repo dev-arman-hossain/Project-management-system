@@ -15,11 +15,11 @@ export default function DashboardPage() {
     const router = useRouter();
     const { user, clearAuth, isAdmin, isLeader } = useAuthStore();
     const { cache, setCacheData, isCacheValid, clearCache } = useDataCache();
-    
+
     const [projects, setProjects] = useState<Project[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [stats, setStats] = useState<ProjectStats | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(!isCacheValid());
     const [showUserManagement, setShowUserManagement] = useState(false);
     const [mounted, setMounted] = useState(false);
 
@@ -63,7 +63,7 @@ export default function DashboardPage() {
 
             const projectsData = projectsRes.data.data.projects;
             const statsData = statsRes.data.data;
-            
+
             setProjects(projectsData);
             setStats(statsData);
 

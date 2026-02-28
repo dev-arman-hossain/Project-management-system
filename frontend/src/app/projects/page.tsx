@@ -13,9 +13,9 @@ export default function ProjectsPage() {
     const router = useRouter();
     const { user, clearAuth } = useAuthStore();
     const { cache, setCacheData, isCacheValid } = useDataCache();
-    
+
     const [projects, setProjects] = useState<Project[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(!isCacheValid());
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {

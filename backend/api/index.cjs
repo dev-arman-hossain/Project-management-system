@@ -59105,8 +59105,8 @@ var ProjectService = class {
     if (!project) {
       throw new NotFoundError("Project not found");
     }
-    if (userRole !== "ADMIN" && userRole !== "LEADER" && project.createdById !== userId) {
-      throw new AuthorizationError("You can only delete projects you created");
+    if (userRole !== "ADMIN" && userRole !== "LEADER" && project.createdById !== userId && project.assignedToId !== userId) {
+      throw new AuthorizationError("You can only delete projects you created or are assigned to you");
     }
     await prisma.project.delete({
       where: { id: projectId }
