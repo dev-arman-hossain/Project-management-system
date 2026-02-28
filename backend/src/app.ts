@@ -10,13 +10,16 @@ import projectRoutes from "./modules/projects/projects.routes";
 
 const app: Application = express();
 
-// Middleware
+// CORS Middleware - allow dynamic configuration
 app.use(
   cors({
-    origin: config.frontendUrl || "http://localhost:3000",
-    credentials: true,
-  }),
+    origin: config.frontendUrl || "http://localhost:3000",  // Dynamically configure CORS origin
+    credentials: true,  // Allow credentials (cookies, authorization headers, etc.)
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  // Allow relevant HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"],  // Specify allowed headers
+  })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -26,7 +29,7 @@ app.get(["/", "/api"], (req, res) => {
     message: "Welcome to Project Management API",
     url: req.url,
     originalUrl: req.originalUrl,
-    path: req.path
+    path: req.path,
   });
 });
 
@@ -44,7 +47,7 @@ app.use(["/api/auth", "/auth"], authRoutes);
 app.use(["/api/users", "/users"], userRoutes);
 app.use(["/api/projects", "/projects"], projectRoutes);
 
-// Error handling
+// Error handling middleware
 app.use(notFoundHandler);
 app.use(errorHandler);
 

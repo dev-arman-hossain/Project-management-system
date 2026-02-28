@@ -59526,7 +59526,13 @@ var app = (0, import_express4.default)();
 app.use(
   (0, import_cors.default)({
     origin: config_default.frontendUrl || "http://localhost:3000",
-    credentials: true
+    // Dynamically configure CORS origin
+    credentials: true,
+    // Allow credentials (cookies, authorization headers, etc.)
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    // Allow relevant HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"]
+    // Specify allowed headers
   })
 );
 app.use(import_express4.default.json());
