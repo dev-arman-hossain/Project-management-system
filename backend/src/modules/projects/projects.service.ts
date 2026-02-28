@@ -1,6 +1,6 @@
 import { prisma } from '../../lib/prisma';
 import { NotFoundError, AuthorizationError } from '../../utils/errors';
-import { ProjectStatus } from '@prisma/client';
+import { ProjectStatus } from '../../generated/prisma/index.js';
 
 export class ProjectService {
     /**
@@ -62,8 +62,8 @@ export class ProjectService {
     /**
      * Get all projects (role-based filtering)
      */
-    static async getAllProjects(userId: string, userRole: 'ADMIN' | 'MEMBER') {
-        const where = userRole === 'ADMIN' ? {} : { assignedToId: userId };
+    static async getAllProjects(userId: string, userRole: 'ADMIN' | 'LEADER' | 'MEMBER') {
+        const where = (userRole === 'ADMIN' || userRole === 'LEADER') ? {} : { assignedToId: userId };
 
         const projects = await prisma.project.findMany({
             where,
@@ -97,7 +97,7 @@ export class ProjectService {
     static async getProjectById(
         projectId: string,
         userId: string,
-        userRole: 'ADMIN' | 'MEMBER'
+        userRole: 'ADMIN' | 'LEADER' | 'MEMBER'
     ) {
         const project = await prisma.project.findUnique({
             where: { id: projectId },
@@ -137,7 +137,7 @@ export class ProjectService {
     static async updateProject(
         projectId: string,
         userId: string,
-        userRole: 'ADMIN' | 'MEMBER',
+        userRole: 'ADMIN' | 'LEADER' | 'MEMBER',
         data: {
             title?: string;
             description?: string;
@@ -158,7 +158,7 @@ export class ProjectService {
         }
 
         // Members can only update status of their assigned projects
-        if (userRole === 'MEMBER') {
+        if (userRole !== 'ADMIN' && userRole !== 'LEADER') {
             if (project.assignedToId !== userId) {
                 throw new AuthorizationError('You can only update your assigned projects');
             }
@@ -230,8 +230,8 @@ export class ProjectService {
     /**
      * Get project statistics
      */
-    static async getProjectStats(userRole: 'ADMIN' | 'MEMBER', userId?: string) {
-        const where = userRole === 'ADMIN' ? {} : { assignedToId: userId };
+    static async getProjectStats(userRole: 'ADMIN' | 'LEADER' | 'MEMBER', userId?: string) {
+        const where = (userRole === 'ADMIN' || userRole === 'LEADER') ? {} : { assignedToId: userId };
 
         const projects = await prisma.project.findMany({
             where,

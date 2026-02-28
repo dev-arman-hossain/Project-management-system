@@ -30,7 +30,7 @@ export const authenticate = async (
 /**
  * Middleware to authorize user based on role
  */
-export const authorize = (...roles: Array<'ADMIN' | 'MEMBER'>) => {
+export const authorize = (...roles: Array<'ADMIN' | 'LEADER' | 'MEMBER'>) => {
     return (req: Request, _res: Response, next: NextFunction) => {
         if (!req.user) {
             return next(new AuthenticationError('User not authenticated'));

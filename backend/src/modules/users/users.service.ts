@@ -69,7 +69,7 @@ export class UserService {
             name?: string;
             email?: string;
             password?: string;
-            role?: 'ADMIN' | 'MEMBER';
+            role?: 'ADMIN' | 'LEADER' | 'MEMBER';
         }
     ) {
         // Check if user exists

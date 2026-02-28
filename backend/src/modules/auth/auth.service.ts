@@ -13,7 +13,7 @@ export class AuthService {
         email: string;
         name: string;
         password: string;
-        role?: 'ADMIN' | 'MEMBER';
+        role?: 'ADMIN' | 'LEADER' | 'MEMBER';
     }) {
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({

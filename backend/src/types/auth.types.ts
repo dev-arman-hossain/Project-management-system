@@ -2,13 +2,13 @@ export interface AuthUser {
     id: string;
     email: string;
     name: string;
-    role: 'ADMIN' | 'MEMBER';
+    role: 'ADMIN' | 'LEADER' | 'MEMBER';
 }
 
 export interface JWTPayload {
     userId: string;
     email: string;
-    role: 'ADMIN' | 'MEMBER';
+    role: 'ADMIN' | 'LEADER' | 'MEMBER';
 }
 
 declare global {

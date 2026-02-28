@@ -132,7 +132,7 @@ export default function CreateProjectDialog({ users, onClose, onSuccess }: Creat
                             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
                         >
                             <option value="">Unassigned</option>
-                            {users.filter(u => u.role === 'MEMBER').map((user) => (
+                            {users.filter(u => u.role === 'MEMBER' || u.role === 'LEADER').map((user) => (
                                 <option key={user.id} value={user.id}>
                                     {user.name} ({user.email})
                                 </option>
