@@ -58928,7 +58928,12 @@ var ProjectService = class {
    * Get all projects (role-based filtering)
    */
   static async getAllProjects(userId, userRole) {
-    const where = userRole === "ADMIN" || userRole === "LEADER" ? {} : { assignedToId: userId };
+    const where = userRole === "ADMIN" || userRole === "LEADER" ? {} : {
+      OR: [
+        { assignedToId: userId },
+        { createdById: userId }
+      ]
+    };
     const projects = await prisma.project.findMany({
       where,
       include: {
@@ -58979,8 +58984,8 @@ var ProjectService = class {
     if (!project) {
       throw new NotFoundError("Project not found");
     }
-    if (userRole === "MEMBER" && project.assignedToId !== userId) {
-      throw new AuthorizationError("You can only view your assigned projects");
+    if (userRole === "MEMBER" && project.assignedToId !== userId && project.createdById !== userId) {
+      throw new AuthorizationError("You can only view your assigned projects or projects you created");
     }
     return project;
   }
@@ -58995,8 +59000,8 @@ var ProjectService = class {
       throw new NotFoundError("Project not found");
     }
     if (userRole !== "ADMIN" && userRole !== "LEADER") {
-      if (project.assignedToId !== userId) {
-        throw new AuthorizationError("You can only update your assigned projects");
+      if (project.assignedToId !== userId && project.createdById !== userId) {
+        throw new AuthorizationError("You can only update your assigned projects or projects you created");
       }
       const allowedKeys = ["status", "title", "deadline"];
       if (Object.keys(data).some((key) => !allowedKeys.includes(key))) {
@@ -59056,7 +59061,12 @@ var ProjectService = class {
    * Get project statistics
    */
   static async getProjectStats(userRole, userId) {
-    const where = userRole === "ADMIN" || userRole === "LEADER" ? {} : { assignedToId: userId };
+    const where = userRole === "ADMIN" || userRole === "LEADER" ? {} : {
+      OR: [
+        { assignedToId: userId },
+        { createdById: userId }
+      ]
+    };
     const projects = await prisma.project.findMany({
       where,
       select: {
@@ -59222,7 +59232,7 @@ router3.get("/", ProjectController.getAllProjects);
 router3.get("/stats", ProjectController.getProjectStats);
 router3.post(
   "/",
-  authorize("ADMIN", "LEADER"),
+  authorize("ADMIN", "LEADER", "MEMBER"),
   validate(createProjectSchema),
   ProjectController.createProject
 );

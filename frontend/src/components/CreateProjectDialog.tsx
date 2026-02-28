@@ -36,12 +36,13 @@ const projectSchema = z.object({
 type ProjectForm = z.infer<typeof projectSchema>;
 
 interface CreateProjectDialogProps {
+    user: User;
     users: User[];
     onClose: () => void;
     onSuccess: () => void;
 }
 
-export default function CreateProjectDialog({ users, onClose, onSuccess }: CreateProjectDialogProps) {
+export default function CreateProjectDialog({ user: currentUser, users, onClose, onSuccess }: CreateProjectDialogProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -64,6 +65,12 @@ export default function CreateProjectDialog({ users, onClose, onSuccess }: Creat
         try {
             setLoading(true);
             setError('');
+
+            // If user is a member, auto-assign to themselves
+            if (currentUser.role === 'MEMBER') {
+                data.assignedToId = currentUser.id;
+            }
+
             await projectsAPI.create(data);
             onSuccess();
         } catch (err: any) {
@@ -122,23 +129,25 @@ export default function CreateProjectDialog({ users, onClose, onSuccess }: Creat
                         />
                     </div>
 
-                    <div>
-                        <label htmlFor="assignedToId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Assign To
-                        </label>
-                        <select
-                            {...register('assignedToId')}
-                            id="assignedToId"
-                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
-                        >
-                            <option value="">Unassigned</option>
-                            {users.filter(u => u.role === 'MEMBER' || u.role === 'LEADER').map((user) => (
-                                <option key={user.id} value={user.id}>
-                                    {user.name} ({user.email})
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    {currentUser.role !== 'MEMBER' && (
+                        <div>
+                            <label htmlFor="assignedToId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Assign To
+                            </label>
+                            <select
+                                {...register('assignedToId')}
+                                id="assignedToId"
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                            >
+                                <option value="">Unassigned</option>
+                                {users.filter(u => u.role === 'MEMBER' || u.role === 'LEADER').map((user) => (
+                                    <option key={user.id} value={user.id}>
+                                        {user.name} ({user.email})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
 
                     <div>
                         <label htmlFor="sheetOption" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">

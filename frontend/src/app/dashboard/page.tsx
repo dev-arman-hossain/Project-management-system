@@ -217,6 +217,7 @@ export default function DashboardPage() {
             {/* Dialogs */}
             {showCreateProject && (
                 <CreateProjectDialog
+                    user={user!}
                     users={users}
                     onClose={() => setShowCreateProject(false)}
                     onSuccess={handleProjectCreated}

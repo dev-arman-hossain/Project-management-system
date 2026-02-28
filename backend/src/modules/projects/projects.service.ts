@@ -35,8 +35,8 @@ export class ProjectService {
                 createdById: data.createdById,
                 sheetUrl: data.sheetUrl,
                 sheetOption: data.sheetOption,
-                startDate: data.startDate ? new Date(data.startDate) : undefined,
-                deadline: data.deadline ? new Date(data.deadline) : undefined,
+                startDate: (data.startDate && data.startDate !== '') ? new Date(data.startDate) : undefined,
+                deadline: (data.deadline && data.deadline !== '') ? new Date(data.deadline) : undefined,
             },
             include: {
                 assignedTo: {
@@ -192,8 +192,8 @@ export class ProjectService {
             where: { id: projectId },
             data: {
                 ...data,
-                startDate: data.startDate ? new Date(data.startDate) : undefined,
-                deadline: data.deadline ? new Date(data.deadline) : undefined,
+                startDate: (data.startDate && data.startDate !== '') ? new Date(data.startDate) : undefined,
+                deadline: (data.deadline && data.deadline !== '') ? new Date(data.deadline) : undefined,
             },
             include: {
                 assignedTo: {
