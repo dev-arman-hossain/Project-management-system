@@ -277,21 +277,33 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                     </div>
 
                     {/* Delivery date — editable */}
-                    <div className="flex items-center gap-2">
-                        <CalendarX className="w-4 h-4 shrink-0 text-gray-400" />
+                    <div className={`flex items-start gap-2 ${editingDeadline ? 'col-span-2 mt-2 pt-2 border-t border-gray-100 dark:border-gray-700/50' : ''}`}>
+                        <CalendarX className="w-4 h-4 shrink-0 text-gray-400 mt-1" />
                         <div className="flex flex-col flex-1 min-w-0">
                             <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Delivery Date</span>
                             {editingDeadline ? (
-                                <div className="flex items-center gap-1 mt-0.5">
+                                <div className="flex flex-col gap-3 mt-2">
                                     <input
                                         type="datetime-local"
                                         value={localDeadline}
                                         onChange={(e) => setLocalDeadline(e.target.value)}
                                         onKeyDown={(e) => { if (e.key === 'Enter') handleSaveDeadline(); if (e.key === 'Escape') handleCancelDeadline(); }}
-                                        className="text-xs border border-indigo-400 rounded-md px-1.5 py-0.5 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full"
+                                        className="w-full px-3 py-2 text-sm border-2 border-indigo-400 rounded-xl bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 shadow-sm"
                                     />
-                                    <button onClick={handleSaveDeadline} className="p-0.5 text-emerald-600 hover:bg-emerald-50 rounded transition"><Check className="w-3.5 h-3.5" /></button>
-                                    <button onClick={handleCancelDeadline} className="p-0.5 text-gray-400 hover:bg-gray-100 rounded transition"><X className="w-3.5 h-3.5" /></button>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={handleSaveDeadline}
+                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition text-xs font-bold uppercase tracking-wider shadow-sm"
+                                        >
+                                            <Check className="w-4 h-4" /> Save Changes
+                                        </button>
+                                        <button
+                                            onClick={handleCancelDeadline}
+                                            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition text-xs font-bold uppercase tracking-wider"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
                                 </div>
                             ) : (
                                 <div
