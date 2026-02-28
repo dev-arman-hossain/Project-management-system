@@ -14,7 +14,6 @@ import {
 import { Project, User, ProjectStats } from '@/types';
 import ProjectCard from './ProjectCard';
 import CreateProjectDialog from './CreateProjectDialog';
-import UserManagement from './UserManagement';
 
 interface AdminDashboardProps {
     user: User;
@@ -22,7 +21,6 @@ interface AdminDashboardProps {
     users: User[];
     stats: ProjectStats | null;
     onProjectUpdated: () => void;
-    onUsersUpdated: () => void;
 }
 
 export default function AdminDashboard({
@@ -31,10 +29,8 @@ export default function AdminDashboard({
     users,
     stats,
     onProjectUpdated,
-    onUsersUpdated,
 }: AdminDashboardProps) {
     const [showCreateProject, setShowCreateProject] = useState(false);
-    const [showUserManagement, setShowUserManagement] = useState(false);
 
     const adminCount = users.filter((u) => u.role === 'ADMIN').length;
     const leaderCount = users.filter((u) => u.role === 'LEADER').length;
@@ -259,14 +255,6 @@ export default function AdminDashboard({
                         setShowCreateProject(false);
                         onProjectUpdated();
                     }}
-                />
-            )}
-
-            {showUserManagement && (
-                <UserManagement
-                    users={users}
-                    onClose={() => setShowUserManagement(false)}
-                    onUpdate={onUsersUpdated}
                 />
             )}
         </div>

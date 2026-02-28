@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { projectsAPI, usersAPI } from '@/lib/api';
 import { Project, User, ProjectStats } from '@/types';
-import { LogOut } from 'lucide-react';
 import AdminDashboard from '@/components/AdminDashboard';
 import LeaderDashboard from '@/components/LeaderDashboard';
 import MemberDashboard from '@/components/MemberDashboard';
 import UserManagement from '@/components/UserManagement';
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -92,7 +92,6 @@ export default function DashboardPage() {
         );
     }
 
-    return (
     const getRoleBasedTitle = () => {
         if (isAdmin()) return 'Admin Dashboard';
         if (isLeader()) return 'Leader Dashboard';
@@ -100,79 +99,45 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-            {/* Header */}
-            <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                {getRoleBasedTitle()}
-                            </h1>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                Welcome back, {user?.name} • {user?.role}
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            {isAdmin() && (
-                                <button
-                                    onClick={() => setShowUserManagement(true)}
-                                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition text-sm"
-                                >
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 12H9m6 0a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    Manage Users
-                                </button>
-                            )}
-                            <button
-                                onClick={handleLogout}
-                                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition text-sm"
-                            >
-                                <LogOut className="w-4 h-4" />
-                                Logout
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </header>
+        <DashboardLayout
+            user={user}
+            title={getRoleBasedTitle()}
+            onLogout={handleLogout}
+            onManageUsers={isAdmin() ? () => setShowUserManagement(true) : undefined}
+        >
+            {isAdmin() ? (
+                <AdminDashboard
+                    user={user!}
+                    projects={projects}
+                    users={users}
+                    stats={stats}
+                    onProjectUpdated={handleProjectUpdated}
+                />
+            ) : isLeader() ? (
+                <LeaderDashboard
+                    user={user!}
+                    projects={projects}
+                    users={users}
+                    stats={stats}
+                    onProjectUpdated={handleProjectUpdated}
+                />
+            ) : (
+                <MemberDashboard
+                    user={user!}
+                    projects={projects}
+                    stats={stats}
+                    onProjectUpdated={handleProjectUpdated}
+                />
+            )}
 
-            {/* Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {isAdmin() ? (
-                    <AdminDashboard
-                        user={user!}
-                        projects={projects}
-                        users={users}
-                        stats={stats}
-                        onProjectUpdated={handleProjectUpdated}
-                        onUsersUpdated={handleUsersUpdated}
-                    />
-                ) : isLeader() ? (
-                    <LeaderDashboard
-                        user={user!}
-                        projects={projects}
-                        users={users}
-                        stats={stats}
-                        onProjectUpdated={handleProjectUpdated}
-                    />
-                ) : (
-                    <MemberDashboard
-                        user={user!}
-                        projects={projects}
-                        stats={stats}
-                        onProjectUpdated={handleProjectUpdated}
-                    />
-                )}
-            </div>
-
-            {/* Dialogs */}
+            {/* User Management Modal */}
             {showUserManagement && (
                 <UserManagement
                     users={users}
                     onClose={() => setShowUserManagement(false)}
-                    onUpdate={handleUsersUpdated
+                    onUpdate={handleUsersUpdated}
+                />
             )}
-        </div>
+        </DashboardLayout>
     );
 }
