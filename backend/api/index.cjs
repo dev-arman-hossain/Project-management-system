@@ -59043,14 +59043,17 @@ var ProjectService = class {
     return updatedProject;
   }
   /**
-   * Delete project (Admin only)
+   * Delete project (Admin, Leader, or Creator)
    */
-  static async deleteProject(projectId) {
+  static async deleteProject(projectId, userId, userRole) {
     const project = await prisma.project.findUnique({
       where: { id: projectId }
     });
     if (!project) {
       throw new NotFoundError("Project not found");
+    }
+    if (userRole !== "ADMIN" && userRole !== "LEADER" && project.createdById !== userId) {
+      throw new AuthorizationError("You can only delete projects you created");
     }
     await prisma.project.delete({
       where: { id: projectId }
@@ -59167,7 +59170,7 @@ var ProjectController = class {
   static async deleteProject(req, res, next) {
     try {
       const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-      await ProjectService.deleteProject(id);
+      await ProjectService.deleteProject(id, req.user.id, req.user.role);
       res.status(200).json({
         success: true,
         message: "Project deleted successfully"
@@ -59245,7 +59248,7 @@ router3.patch(
 );
 router3.delete(
   "/:id",
-  authorize("ADMIN", "LEADER"),
+  authorize("ADMIN", "LEADER", "MEMBER"),
   validate(projectIdSchema),
   ProjectController.deleteProject
 );

@@ -194,6 +194,17 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
             ? new Date(project.deadline).toLocaleDateString()
             : 'Not set';
 
+    const formatDateTime = (dateStr: string | Date) => {
+        if (!dateStr) return 'Not set';
+        return new Intl.DateTimeFormat('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        }).format(new Date(dateStr));
+    };
+
     return (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 hover:shadow-md transition">
 
@@ -261,7 +272,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                         <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
                         <div className="flex flex-col">
                             <span className="text-[10px] uppercase tracking-wider text-gray-500 font-medium">Start Date</span>
-                            <span className="text-sm font-semibold">{new Date(project.startDate).toLocaleDateString()}</span>
+                            <span className="text-sm font-semibold">{formatDateTime(project.startDate)}</span>
                         </div>
                     </div>
 
@@ -288,7 +299,9 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                                     onClick={() => canEdit && setEditingDeadline(true)}
                                     title={canEdit ? "Click to edit deadline" : ""}
                                 >
-                                    <span className={`text-sm ${getDeadlineDateColor()}`}>{displayDeadline}</span>
+                                    <span className={`text-sm ${getDeadlineDateColor()}`}>
+                                        {formatDateTime(localDeadline || project.deadline || '')}
+                                    </span>
                                     {canEdit && (
                                         <Pencil className="w-3 h-3 text-indigo-500 opacity-70 group-hover:opacity-100 transition shrink-0" />
                                     )}
