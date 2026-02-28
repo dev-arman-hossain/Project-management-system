@@ -20,8 +20,18 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Debug root route to test Vercel rewrites
+app.get(["/", "/api"], (req, res) => {
+  res.status(200).json({
+    message: "Welcome to Project Management API",
+    url: req.url,
+    originalUrl: req.originalUrl,
+    path: req.path
+  });
+});
+
 // Health check
-app.get("/health", (_req, res) => {
+app.get(["/health", "/api/health"], (_req, res) => {
   res.status(200).json({
     success: true,
     message: "Server is running",
@@ -29,10 +39,10 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// API Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/projects", projectRoutes);
+// API Routes (mount on both /api and root for Vercel serverless compatibility)
+app.use(["/api/auth", "/auth"], authRoutes);
+app.use(["/api/users", "/users"], userRoutes);
+app.use(["/api/projects", "/projects"], projectRoutes);
 
 // Error handling
 app.use(notFoundHandler);
