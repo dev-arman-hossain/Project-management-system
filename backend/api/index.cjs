@@ -59529,7 +59529,7 @@ app.use(
     // Dynamically configure CORS origin
     credentials: true,
     // Allow credentials (cookies, authorization headers, etc.)
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     // Allow relevant HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"]
     // Specify allowed headers

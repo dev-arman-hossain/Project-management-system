@@ -15,7 +15,7 @@ app.use(
   cors({
     origin: config.frontendUrl || "http://localhost:3000",  // Dynamically configure CORS origin
     credentials: true,  // Allow credentials (cookies, authorization headers, etc.)
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  // Allow relevant HTTP methods
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],  // Allow relevant HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"],  // Specify allowed headers
   })
 );
