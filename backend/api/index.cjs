@@ -58902,8 +58902,8 @@ var ProjectService = class {
         createdById: data.createdById,
         sheetUrl: data.sheetUrl,
         sheetOption: data.sheetOption,
-        startDate: data.startDate ? new Date(data.startDate) : void 0,
-        deadline: data.deadline ? new Date(data.deadline) : void 0
+        startDate: data.startDate && data.startDate !== "" ? new Date(data.startDate) : void 0,
+        deadline: data.deadline && data.deadline !== "" ? new Date(data.deadline) : void 0
       },
       include: {
         assignedTo: {
@@ -59020,8 +59020,8 @@ var ProjectService = class {
       where: { id: projectId },
       data: {
         ...data,
-        startDate: data.startDate ? new Date(data.startDate) : void 0,
-        deadline: data.deadline ? new Date(data.deadline) : void 0
+        startDate: data.startDate && data.startDate !== "" ? new Date(data.startDate) : void 0,
+        deadline: data.deadline && data.deadline !== "" ? new Date(data.deadline) : void 0
       },
       include: {
         assignedTo: {
