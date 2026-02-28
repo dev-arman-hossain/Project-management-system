@@ -20,15 +20,21 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [showCreateProject, setShowCreateProject] = useState(false);
     const [showUserManagement, setShowUserManagement] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
         if (!user) {
             router.push('/login');
             return;
         }
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user, router]);
+    }, [user, router, mounted]);
 
     const fetchData = async () => {
         try {
@@ -80,7 +86,7 @@ export default function DashboardPage() {
         silentRefresh();
     };
 
-    if (loading) {
+    if (!mounted || loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
                 <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
