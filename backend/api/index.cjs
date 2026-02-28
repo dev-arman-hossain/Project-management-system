@@ -32304,15 +32304,15 @@ var require_pg_pool = __commonJS({
       });
       return { callback: cb, result };
     }
-    function makeIdleListener(pool, client) {
+    function makeIdleListener(pool2, client) {
       return function idleListener(err) {
         err.client = client;
         client.removeListener("error", idleListener);
         client.on("error", () => {
-          pool.log("additional client error after disconnection due to error", err);
+          pool2.log("additional client error after disconnection due to error", err);
         });
-        pool._remove(client);
-        pool.emit("error", err, client);
+        pool2._remove(client);
+        pool2.emit("error", err, client);
       };
     }
     var Pool2 = class extends EventEmitter {
@@ -43801,6 +43801,21 @@ var import_jsonwebtoken = __toESM(require_jsonwebtoken(), 1);
   );
 })();
 
+// node_modules/pg/esm/index.mjs
+var import_lib = __toESM(require_lib5(), 1);
+var Client = import_lib.default.Client;
+var Pool = import_lib.default.Pool;
+var Connection = import_lib.default.Connection;
+var types = import_lib.default.types;
+var Query = import_lib.default.Query;
+var DatabaseError = import_lib.default.DatabaseError;
+var escapeIdentifier = import_lib.default.escapeIdentifier;
+var escapeLiteral = import_lib.default.escapeLiteral;
+var Result = import_lib.default.Result;
+var TypeOverrides = import_lib.default.TypeOverrides;
+var defaults = import_lib.default.defaults;
+var esm_default = import_lib.default;
+
 // node_modules/@prisma/debug/dist/index.mjs
 var __defProp2 = Object.defineProperty;
 var __export2 = (target, all) => {
@@ -44041,21 +44056,6 @@ var mockAdapterErrors = {
   executeScript: new Error("Not implemented: executeScript"),
   dispose: new Error("Not implemented: dispose")
 };
-
-// node_modules/pg/esm/index.mjs
-var import_lib = __toESM(require_lib5(), 1);
-var Client = import_lib.default.Client;
-var Pool = import_lib.default.Pool;
-var Connection = import_lib.default.Connection;
-var types = import_lib.default.types;
-var Query = import_lib.default.Query;
-var DatabaseError = import_lib.default.DatabaseError;
-var escapeIdentifier = import_lib.default.escapeIdentifier;
-var escapeLiteral = import_lib.default.escapeLiteral;
-var Result = import_lib.default.Result;
-var TypeOverrides = import_lib.default.TypeOverrides;
-var defaults = import_lib.default.defaults;
-var esm_default = import_lib.default;
 
 // node_modules/@prisma/adapter-pg/dist/index.mjs
 var import_postgres_array = __toESM(require_postgres_array2(), 1);
@@ -44825,7 +44825,8 @@ var PrismaPgAdapterFactory = class {
 // src/lib/prisma.ts
 var import_prisma = __toESM(require_prisma(), 1);
 var connectionString = `${process.env.DATABASE_URL}`;
-var adapter = new PrismaPgAdapterFactory({ connectionString });
+var pool = new esm_default.Pool({ connectionString });
+var adapter = new PrismaPgAdapterFactory(pool);
 var prisma = new import_prisma.PrismaClient({ adapter });
 
 // src/modules/auth/auth.service.ts
