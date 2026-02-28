@@ -226,31 +226,23 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                             </div>
                         ) : (
                             <div className="space-y-2">
-                                <div
-                                    className={`flex items-center gap-1.5 ${canEdit ? 'cursor-pointer group' : ''}`}
-                                    onClick={() => canEdit && setEditingTitle(true)}
-                                    title={canEdit ? "Click to edit name" : ""}
-                                >
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{localTitle}</h3>
-                                    {canEdit && (
-                                        <Pencil className="w-3.5 h-3.5 text-indigo-500 opacity-70 group-hover:opacity-100 transition shrink-0" />
+                                <div className="flex items-baseline justify-between gap-1.5 mt-1">
+                                    <div
+                                        className={`flex items-center gap-1.5 ${canEdit ? 'cursor-pointer group' : ''}`}
+                                        onClick={() => canEdit && setEditingTitle(true)}
+                                        title={canEdit ? "Click to edit name" : ""}
+                                    >
+                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{localTitle}</h3>
+                                        {canEdit && (
+                                            <Pencil className="w-3.5 h-3.5 text-indigo-500 opacity-70 group-hover:opacity-100 transition shrink-0" />
+                                        )}
+                                    </div>
+                                    {typeof project.value === 'number' && (
+                                        <span className="shrink-0 px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-sm font-bold border border-gray-200 dark:border-gray-600">
+                                            ₹{project.value.toLocaleString()}
+                                        </span>
                                     )}
                                 </div>
-                                {project.value !== undefined && (
-                                    <div className="flex items-center gap-2">
-                                        <div className="relative bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 dark:from-indigo-600 dark:via-purple-600 dark:to-pink-600 rounded-2xl px-5 py-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-white/30 dark:border-white/10 w-full group overflow-hidden">
-                                            {/* Animated glare effect */}
-                                            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-
-                                            <div className="relative z-10 text-center">
-                                                <p className="text-[10px] font-black text-white/90 uppercase tracking-widest mb-0.5">Project Value</p>
-                                                <p className="text-2xl font-black text-white tabular-nums tracking-tight">
-                                                    ₹{project.value.toLocaleString()}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
                         )}
                     </div>
