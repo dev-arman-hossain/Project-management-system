@@ -55,7 +55,7 @@ export default function CreateProjectDialog({ user: currentUser, users, onClose,
         resolver: zodResolver(projectSchema),
         defaultValues: {
             sheetOption: 'NOT_PROVIDED',
-            startDate: new Date().toISOString().split('T')[0],
+            startDate: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
         }
     });
 
@@ -190,7 +190,7 @@ export default function CreateProjectDialog({ user: currentUser, users, onClose,
                             </label>
                             <input
                                 {...register('startDate')}
-                                type="date"
+                                type="datetime-local"
                                 id="startDate"
                                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
                             />
@@ -204,7 +204,7 @@ export default function CreateProjectDialog({ user: currentUser, users, onClose,
                             </label>
                             <input
                                 {...register('deadline')}
-                                type="date"
+                                type="datetime-local"
                                 id="deadline"
                                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
                             />

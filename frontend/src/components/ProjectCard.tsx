@@ -63,7 +63,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
     const [localStatus, setLocalStatus] = useState<ProjectStatus>(project.status);
     const [localTitle, setLocalTitle] = useState(project.title);
     const [localDeadline, setLocalDeadline] = useState(
-        project.deadline ? new Date(project.deadline).toISOString().split('T')[0] : ''
+        project.deadline ? new Date(new Date(project.deadline).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''
     );
 
     // ── Edit mode toggles ──
@@ -78,7 +78,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
     useEffect(() => { setLocalStatus(project.status); }, [project.status]);
     useEffect(() => { setLocalTitle(project.title); }, [project.title]);
     useEffect(() => {
-        setLocalDeadline(project.deadline ? new Date(project.deadline).toISOString().split('T')[0] : '');
+        setLocalDeadline(project.deadline ? new Date(new Date(project.deadline).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '');
     }, [project.deadline]);
 
     // Focus title input when edit mode opens
@@ -141,7 +141,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
         setEditingDeadline(false);
         const newDeadline = localDeadline || null;
         const prevDeadline = project.deadline
-            ? new Date(project.deadline).toISOString().split('T')[0]
+            ? new Date(new Date(project.deadline).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
             : '';
         if (localDeadline === prevDeadline) return;
         try {
@@ -153,7 +153,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
     };
 
     const handleCancelDeadline = () => {
-        setLocalDeadline(project.deadline ? new Date(project.deadline).toISOString().split('T')[0] : '');
+        setLocalDeadline(project.deadline ? new Date(new Date(project.deadline).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '');
         setEditingDeadline(false);
     };
 
@@ -284,11 +284,11 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                             {editingDeadline ? (
                                 <div className="flex items-center gap-1 mt-0.5">
                                     <input
-                                        type="date"
+                                        type="datetime-local"
                                         value={localDeadline}
                                         onChange={(e) => setLocalDeadline(e.target.value)}
                                         onKeyDown={(e) => { if (e.key === 'Enter') handleSaveDeadline(); if (e.key === 'Escape') handleCancelDeadline(); }}
-                                        className="text-xs border border-indigo-400 rounded-md px-1.5 py-0.5 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 w-28"
+                                        className="text-xs border border-indigo-400 rounded-md px-1.5 py-0.5 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full"
                                     />
                                     <button onClick={handleSaveDeadline} className="p-0.5 text-emerald-600 hover:bg-emerald-50 rounded transition"><Check className="w-3.5 h-3.5" /></button>
                                     <button onClick={handleCancelDeadline} className="p-0.5 text-gray-400 hover:bg-gray-100 rounded transition"><X className="w-3.5 h-3.5" /></button>
