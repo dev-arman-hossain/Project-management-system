@@ -58904,7 +58904,8 @@ var ProjectService = class {
         sheetUrl: data.sheetUrl,
         sheetOption: data.sheetOption,
         startDate: data.startDate && data.startDate !== "" ? new Date(data.startDate) : void 0,
-        deadline: data.deadline && data.deadline !== "" ? new Date(data.deadline) : void 0
+        deadline: data.deadline && data.deadline !== "" ? new Date(data.deadline) : void 0,
+        value: data.value
       },
       select: {
         id: true,

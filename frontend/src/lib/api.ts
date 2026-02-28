@@ -74,7 +74,7 @@ export const projectsAPI = {
 
     getById: (id: string) => apiClient.get(`/projects/${id}`),
 
-    create: (data: { title: string; description?: string; assignedToId?: string }) =>
+    create: (data: { title: string; description?: string; assignedToId?: string; value?: number }) =>
         apiClient.post('/projects', data),
 
     update: (id: string, data: any) => apiClient.patch(`/projects/${id}`, data),

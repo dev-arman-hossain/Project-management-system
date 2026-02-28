@@ -15,6 +15,7 @@ export class ProjectService {
         sheetOption?: 'PROVIDED' | 'NOT_PROVIDED' | 'WILL_PROVIDE_LATER';
         startDate?: string | Date;
         deadline?: string | Date;
+        value?: number;
     }) {
         // Validate assigned user exists if provided
         if (data.assignedToId) {
@@ -37,6 +38,7 @@ export class ProjectService {
                 sheetOption: data.sheetOption,
                 startDate: (data.startDate && data.startDate !== '') ? new Date(data.startDate) : undefined,
                 deadline: (data.deadline && data.deadline !== '') ? new Date(data.deadline) : undefined,
+                value: data.value,
             },
             select: {
                 id: true,
@@ -193,6 +195,7 @@ export class ProjectService {
             sheetOption?: 'PROVIDED' | 'NOT_PROVIDED' | 'WILL_PROVIDE_LATER';
             startDate?: string | Date;
             deadline?: string | Date;
+            value?: number;
         }
     ) {
         const project = await prisma.project.findUnique({
