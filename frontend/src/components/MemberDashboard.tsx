@@ -214,10 +214,13 @@ export default function MemberDashboard({
                                             </div>
                                         </div>
                                         {project.value && (
-                                            <div className="shrink-0 text-right">
-                                                <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
-                                                    ₹{project.value.toLocaleString()}
-                                                </p>
+                                            <div className="shrink-0">
+                                                <div className="bg-linear-to-br from-amber-400 to-yellow-500 dark:from-yellow-500 dark:to-amber-600 rounded-xl px-4 py-3 shadow-lg hover:shadow-xl transition-shadow">
+                                                    <p className="text-xs font-bold text-gray-900 dark:text-gray-900 uppercase tracking-wider mb-1">Value</p>
+                                                    <p className="text-2xl font-black text-gray-900 dark:text-gray-900 tabular-nums">
+                                                        ₹{project.value.toLocaleString()}
+                                                    </p>
+                                                </div>
                                             </div>
                                         )}
                                     </div>

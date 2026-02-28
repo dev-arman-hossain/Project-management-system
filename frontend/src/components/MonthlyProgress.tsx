@@ -57,16 +57,16 @@ export default function MonthlyProgress({ projects }: MonthlyProgressProps) {
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                         <BarChart3 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Monthly Progress</h3>
                     </div>
-                    <div className="text-right">
-                        <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                    <div className="bg-linear-to-br from-purple-400 to-indigo-500 dark:from-indigo-500 dark:to-purple-600 rounded-xl px-5 py-3 shadow-lg hover:shadow-xl transition-shadow shrink-0">
+                        <p className="text-xs font-bold text-white dark:text-gray-900 uppercase tracking-wider">Total Value</p>
+                        <p className="text-2xl font-black text-white dark:text-gray-900 tabular-nums">
                             ₹{totalCompletedValue.toLocaleString()}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Total Value</p>
                     </div>
                 </div>
             </div>
@@ -80,17 +80,23 @@ export default function MonthlyProgress({ projects }: MonthlyProgressProps) {
 
                         return (
                             <div key={data.month} className="space-y-2">
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between gap-4">
                                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                         {data.month}
                                     </span>
-                                    <div className="text-right">
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                            {data.completed}/{total}
-                                        </p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                                            ₹{data.totalValue.toLocaleString()}
-                                        </p>
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg px-3 py-1.5">
+                                            <p className="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">
+                                                {data.completed}/{total}
+                                            </p>
+                                        </div>
+                                        {data.totalValue > 0 && (
+                                            <div className="bg-linear-to-r from-rose-300 to-pink-400 dark:from-pink-500 dark:to-rose-500 rounded-lg px-3 py-1.5 shadow-md">
+                                                <p className="text-xs font-black text-white dark:text-gray-900 uppercase tracking-wider">
+                                                    ₹{data.totalValue.toLocaleString()}
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 

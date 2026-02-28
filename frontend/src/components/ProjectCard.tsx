@@ -238,9 +238,10 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                                 </div>
                                 {project.value && (
                                     <div className="flex items-center gap-2">
-                                        <span className="inline-block px-3 py-1 text-sm font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg border border-indigo-300 dark:border-indigo-700">
-                                            Value: ₹{project.value.toLocaleString()}
-                                        </span>
+                                        <div className="inline-block bg-linear-to-r from-emerald-400 to-teal-500 dark:from-teal-500 dark:to-emerald-600 rounded-xl px-4 py-2 shadow-md hover:shadow-lg transition-shadow">
+                                            <p className="text-xs font-bold text-gray-900 dark:text-gray-900 uppercase tracking-widest">Value</p>
+                                            <p className="text-xl font-black text-gray-900 dark:text-gray-900 tabular-nums">₹{project.value.toLocaleString()}</p>
+                                        </div>
                                     </div>
                                 )}
                             </div>
