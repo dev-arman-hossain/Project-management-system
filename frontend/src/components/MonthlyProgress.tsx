@@ -62,12 +62,17 @@ export default function MonthlyProgress({ projects }: MonthlyProgressProps) {
                         <BarChart3 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Monthly Progress</h3>
                     </div>
-                    <div className="bg-linear-to-br from-purple-400 to-indigo-500 dark:from-indigo-500 dark:to-purple-600 rounded-xl px-5 py-3 shadow-lg hover:shadow-xl transition-shadow shrink-0">
-                        <p className="text-xs font-bold text-white dark:text-gray-900 uppercase tracking-wider">Total Value</p>
-                        <p className="text-2xl font-black text-white dark:text-gray-900 tabular-nums">
-                            ₹{totalCompletedValue.toLocaleString()}
-                        </p>
-                    </div>
+                    {totalCompletedValue > 0 && (
+                        <div className="relative bg-linear-to-br from-purple-400 via-pink-500 to-indigo-600 dark:from-indigo-500 dark:via-pink-600 dark:to-purple-700 rounded-2xl px-6 py-3 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 border-2 border-white/50 dark:border-purple-300/50 shrink-0">
+                            <div className="absolute inset-0 bg-white/10 dark:bg-black/10 rounded-2xl" />
+                            <div className="relative z-10 text-center">
+                                <p className="text-xs font-black text-white dark:text-gray-900 uppercase tracking-widest">Total Value</p>
+                                <p className="text-2xl font-black text-white dark:text-gray-900 tabular-nums">
+                                    ₹{totalCompletedValue.toLocaleString()}
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -85,14 +90,15 @@ export default function MonthlyProgress({ projects }: MonthlyProgressProps) {
                                         {data.month}
                                     </span>
                                     <div className="flex items-center gap-3">
-                                        <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg px-3 py-1.5">
-                                            <p className="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">
+                                        <div className="bg-blue-100 dark:bg-blue-900/40 rounded-lg px-4 py-2 border border-blue-200 dark:border-blue-800">
+                                            <p className="text-xs font-black text-blue-700 dark:text-blue-300 uppercase tracking-wider">
                                                 {data.completed}/{total}
                                             </p>
                                         </div>
                                         {data.totalValue > 0 && (
-                                            <div className="bg-linear-to-r from-rose-300 to-pink-400 dark:from-pink-500 dark:to-rose-500 rounded-lg px-3 py-1.5 shadow-md">
-                                                <p className="text-xs font-black text-white dark:text-gray-900 uppercase tracking-wider">
+                                            <div className="relative bg-linear-to-r from-rose-400 via-pink-500 to-red-500 dark:from-red-500 dark:via-pink-600 dark:to-rose-600 rounded-lg px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 border border-white/40 dark:border-rose-300/40">
+                                                <div className="absolute inset-0 bg-white/10 dark:bg-black/10 rounded-lg" />
+                                                <p className="relative z-10 text-xs font-black text-white dark:text-gray-900 uppercase tracking-wider">
                                                     ₹{data.totalValue.toLocaleString()}
                                                 </p>
                                             </div>

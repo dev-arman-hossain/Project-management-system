@@ -21,7 +21,8 @@ interface DataCache {
 
 interface DataStore {
     cache: DataCache | null;
-    setCacheData: (projects: Project[], users: User[], stats: ProjectStats | null) => void;
+    cacheUserId: string | null;
+    setCacheData: (projects: Project[], users: User[], stats: ProjectStats | null, userId: string) => void;
     getCacheData: () => DataCache | null;
     isCacheValid: (maxAgeMinutes?: number) => boolean;
     clearCache: () => void;
@@ -69,8 +70,9 @@ export const useAuthStore = create<AuthStore>()(
 // Data cache store (non-persistent, cleared on page refresh)
 export const useDataCache = create<DataStore>((set, get) => ({
     cache: null,
+    cacheUserId: null,
 
-    setCacheData: (projects, users, stats) => {
+    setCacheData: (projects, users, stats, userId) => {
         set({
             cache: {
                 projects,
@@ -78,6 +80,7 @@ export const useDataCache = create<DataStore>((set, get) => ({
                 stats,
                 lastFetched: Date.now(),
             },
+            cacheUserId: userId,
         });
     },
 
@@ -93,6 +96,6 @@ export const useDataCache = create<DataStore>((set, get) => ({
     },
 
     clearCache: () => {
-        set({ cache: null });
+        set({ cache: null, cacheUserId: null });
     },
 }));

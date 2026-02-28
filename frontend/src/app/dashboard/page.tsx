@@ -71,8 +71,8 @@ export default function DashboardPage() {
                 const usersRes = await usersAPI.getAll();
                 const usersData = usersRes.data.data.users;
                 setUsers(usersData);
-                // Update cache
-                setCacheData(projectsData, usersData, statsData);
+                // Update cache with userId
+                setCacheData(projectsData, usersData, statsData, user.id);
             }
         } catch (error) {
             console.error('Failed to fetch data:', error);
@@ -97,8 +97,8 @@ export default function DashboardPage() {
                 const usersRes = await usersAPI.getAll();
                 const usersData = usersRes.data.data.users;
                 setUsers(usersData);
-                // Update cache
-                setCacheData(projectsData, usersData, statsData);
+                // Update cache with userId
+                setCacheData(projectsData, usersData, statsData, user.id);
             }
         } catch (error) {
             console.error('Failed to refresh data:', error);

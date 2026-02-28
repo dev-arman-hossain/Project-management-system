@@ -51,8 +51,8 @@ export default function UsersPage() {
             const usersData = res.data.data.users;
             setUsers(usersData);
             // Update cache
-            if (cache) {
-                setCacheData(cache.projects, usersData, cache.stats);
+            if (cache && currentUser) {
+                setCacheData(cache.projects, usersData, cache.stats, currentUser.id);
             }
         } catch (error) {
             console.error('Failed to fetch users:', error);
@@ -67,8 +67,8 @@ export default function UsersPage() {
             const usersData = res.data.data.users;
             setUsers(usersData);
             // Update cache
-            if (cache) {
-                setCacheData(cache.projects, usersData, cache.stats);
+            if (cache && currentUser) {
+                setCacheData(cache.projects, usersData, cache.stats, currentUser.id);
             }
         } catch (error) {
             console.error('Failed to refresh users:', error);

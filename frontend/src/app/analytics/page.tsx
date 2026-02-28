@@ -59,8 +59,8 @@ export default function AnalyticsPage() {
             setProjects(projectsData);
             setStats(statsData);
             // Update cache
-            if (cache) {
-                setCacheData(projectsData, cache.users, statsData);
+            if (cache && user) {
+                setCacheData(projectsData, cache.users, statsData, user.id);
             }
         } catch (error) {
             console.error('Failed to fetch analytics:', error);
@@ -80,8 +80,8 @@ export default function AnalyticsPage() {
             setProjects(projectsData);
             setStats(statsData);
             // Update cache
-            if (cache) {
-                setCacheData(projectsData, cache.users, statsData);
+            if (cache && user) {
+                setCacheData(projectsData, cache.users, statsData, user.id);
             }
         } catch (error) {
             console.error('Failed to refresh analytics:', error);

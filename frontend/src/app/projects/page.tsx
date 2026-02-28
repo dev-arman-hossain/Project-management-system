@@ -52,8 +52,8 @@ export default function ProjectsPage() {
             const projectsData = res.data.data.projects;
             setProjects(projectsData);
             // Update cache with new projects
-            if (cache) {
-                setCacheData(projectsData, cache.users, cache.stats);
+            if (cache && user) {
+                setCacheData(projectsData, cache.users, cache.stats, user.id);
             }
         } catch (error) {
             console.error('Failed to fetch projects:', error);
@@ -68,8 +68,8 @@ export default function ProjectsPage() {
             const projectsData = res.data.data.projects;
             setProjects(projectsData);
             // Update cache
-            if (cache) {
-                setCacheData(projectsData, cache.users, cache.stats);
+            if (cache && user) {
+                setCacheData(projectsData, cache.users, cache.stats, user.id);
             }
         } catch (error) {
             console.error('Failed to refresh projects:', error);

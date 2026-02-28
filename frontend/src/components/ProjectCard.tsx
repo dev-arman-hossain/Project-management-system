@@ -238,9 +238,12 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                                 </div>
                                 {project.value && (
                                     <div className="flex items-center gap-2">
-                                        <div className="inline-block bg-linear-to-r from-emerald-400 to-teal-500 dark:from-teal-500 dark:to-emerald-600 rounded-xl px-4 py-2 shadow-md hover:shadow-lg transition-shadow">
-                                            <p className="text-xs font-bold text-gray-900 dark:text-gray-900 uppercase tracking-widest">Value</p>
-                                            <p className="text-xl font-black text-gray-900 dark:text-gray-900 tabular-nums">₹{project.value.toLocaleString()}</p>
+                                        <div className="relative bg-linear-to-r from-green-400 via-emerald-500 to-cyan-600 dark:from-cyan-500 dark:via-emerald-600 dark:to-green-700 rounded-2xl px-5 py-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 border-white/50 dark:border-cyan-300/50 w-full">
+                                            <div className="absolute inset-0 bg-white/10 dark:bg-black/10 rounded-2xl" />
+                                            <div className="relative z-10 text-center">
+                                                <p className="text-xs font-black text-white dark:text-gray-900 uppercase tracking-widest mb-1">Value</p>
+                                                <p className="text-2xl font-black text-white dark:text-gray-900 tabular-nums">₹{project.value.toLocaleString()}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 )}

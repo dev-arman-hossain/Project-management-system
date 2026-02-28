@@ -213,13 +213,14 @@ export default function MemberDashboard({
                                                 )}
                                             </div>
                                         </div>
-                                        {project.value && (
+                                        {project.value && project.value > 0 && (
                                             <div className="shrink-0">
-                                                <div className="bg-linear-to-br from-amber-400 to-yellow-500 dark:from-yellow-500 dark:to-amber-600 rounded-xl px-4 py-3 shadow-lg hover:shadow-xl transition-shadow">
-                                                    <p className="text-xs font-bold text-gray-900 dark:text-gray-900 uppercase tracking-wider mb-1">Value</p>
-                                                    <p className="text-2xl font-black text-gray-900 dark:text-gray-900 tabular-nums">
-                                                        ₹{project.value.toLocaleString()}
-                                                    </p>
+                                                <div className="relative bg-linear-to-br from-yellow-300 via-orange-400 to-red-500 dark:from-orange-500 dark:via-red-500 dark:to-yellow-600 rounded-2xl px-6 py-4 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 border-2 border-white/50 dark:border-yellow-300/50">
+                                                    <div className="absolute inset-0 bg-white/10 dark:bg-black/10 rounded-2xl" />
+                                                    <div className="relative z-10">
+                                                        <p className="text-xs font-black text-white dark:text-gray-900 uppercase tracking-widest mb-1">Project Value</p>
+                                                        <p className="text-3xl font-black text-white dark:text-gray-900 tabular-nums leading-none">₹{project.value.toLocaleString()}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}
