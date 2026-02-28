@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore, useDataCache } from '@/lib/store';
-import { projectsAPI } from '@/lib/api';
-import { Project } from '@/types';
-import { FolderKanban } from 'lucide-react';
+import { projectsAPI, usersAPI } from '@/lib/api';
+import { Project, User } from '@/types';
+import { FolderKanban, Plus } from 'lucide-react';
 import ProjectCard from '@/components/ProjectCard';
 import DashboardLayout from '@/components/DashboardLayout';
+import CreateProjectDialog from '@/components/CreateProjectDialog';
 
 export default function ProjectsPage() {
     const router = useRouter();
@@ -15,8 +16,11 @@ export default function ProjectsPage() {
     const { cache, setCacheData, isCacheValid } = useDataCache();
 
     const [projects, setProjects] = useState<Project[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(!isCacheValid());
+    const [showCreateProject, setShowCreateProject] = useState(false);
     const [mounted, setMounted] = useState(false);
+
 
     useEffect(() => {
         setMounted(true);
@@ -41,38 +45,55 @@ export default function ProjectsPage() {
             }
         } else {
             // No valid cache, fetch fresh data with loading
-            fetchProjects();
+            fetchData();
         }
     }, [user, mounted]);
 
-    const fetchProjects = async () => {
+    const fetchData = async () => {
         try {
             setLoading(true);
-            const res = await projectsAPI.getAll();
-            const projectsData = res.data.data.projects;
+            const [projectsRes, usersRes] = await Promise.all([
+                projectsAPI.getAll(),
+                usersAPI.getAll()
+            ]);
+
+            const projectsData = projectsRes.data.data.projects;
+            const usersData = usersRes.data.data.users;
+
             setProjects(projectsData);
-            // Update cache with new projects
+            setUsers(usersData);
+
+            // Update cache
             if (cache && user) {
-                setCacheData(projectsData, cache.users, cache.stats, user.id);
+                setCacheData(projectsData, usersData, cache.stats, user.id);
             }
         } catch (error) {
-            console.error('Failed to fetch projects:', error);
+            console.error('Failed to fetch data:', error);
         } finally {
             setLoading(false);
         }
     };
 
+
     const silentRefresh = async () => {
         try {
-            const res = await projectsAPI.getAll();
-            const projectsData = res.data.data.projects;
+            const [projectsRes, usersRes] = await Promise.all([
+                projectsAPI.getAll(),
+                usersAPI.getAll()
+            ]);
+
+            const projectsData = projectsRes.data.data.projects;
+            const usersData = usersRes.data.data.users;
+
             setProjects(projectsData);
+            setUsers(usersData);
+
             // Update cache
             if (cache && user) {
-                setCacheData(projectsData, cache.users, cache.stats, user.id);
+                setCacheData(projectsData, usersData, cache.stats, user.id);
             }
         } catch (error) {
-            console.error('Failed to refresh projects:', error);
+            console.error('Failed to refresh data:', error);
         }
     };
 
@@ -97,10 +118,19 @@ export default function ProjectsPage() {
         >
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">All Projects</h1>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Total: <span className="font-semibold text-gray-900 dark:text-white">{projects.length}</span>
+                    <div>
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">All Projects</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            Total: <span className="font-semibold text-gray-900 dark:text-white">{projects.length}</span>
+                        </p>
                     </div>
+                    <button
+                        onClick={() => setShowCreateProject(true)}
+                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition flex items-center gap-2"
+                    >
+                        <Plus className="w-5 h-5" />
+                        New Project
+                    </button>
                 </div>
 
                 {projects.length === 0 ? (
@@ -114,13 +144,26 @@ export default function ProjectsPage() {
                             <ProjectCard
                                 key={project.id}
                                 project={project}
-                                onUpdate={fetchProjects}
+                                onUpdate={fetchData}
                                 isAdmin={user?.role !== 'MEMBER' || project.assignedToId === user?.id}
                             />
                         ))}
                     </div>
                 )}
             </div>
+
+            {/* Dialogs */}
+            {showCreateProject && (
+                <CreateProjectDialog
+                    user={user!}
+                    users={users}
+                    onClose={() => setShowCreateProject(false)}
+                    onSuccess={() => {
+                        setShowCreateProject(false);
+                        silentRefresh();
+                    }}
+                />
+            )}
         </DashboardLayout>
     );
 }

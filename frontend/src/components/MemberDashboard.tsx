@@ -67,7 +67,7 @@ export default function MemberDashboard({
                     className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition flex items-center gap-2"
                 >
                     <Plus className="w-5 h-5" />
-                    + New Project
+                    New Project
                 </button>
             </div>
 
@@ -205,8 +205,8 @@ export default function MemberDashboard({
                                             <div className="flex items-center gap-4 mt-2">
                                                 <span
                                                     className={`text-xs font-medium px-2 py-1 rounded ${project.status === 'WIP'
-                                                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                                                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                                                         }`}
                                                 >
                                                     {project.status}
@@ -214,8 +214,8 @@ export default function MemberDashboard({
                                                 {daysUntilDeadline !== null && (
                                                     <span
                                                         className={`text-xs font-medium ${isUrgent
-                                                                ? 'text-red-600 dark:text-red-400'
-                                                                : 'text-gray-600 dark:text-gray-400'
+                                                            ? 'text-red-600 dark:text-red-400'
+                                                            : 'text-gray-600 dark:text-gray-400'
                                                             }`}
                                                     >
                                                         {daysUntilDeadline > 0
@@ -229,11 +229,11 @@ export default function MemberDashboard({
                                         </div>
                                         {project.value && project.value > 0 && (
                                             <div className="shrink-0">
-                                                <div className="relative bg-linear-to-br from-yellow-300 via-orange-400 to-red-500 dark:from-orange-500 dark:via-red-500 dark:to-yellow-600 rounded-2xl px-6 py-4 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 border-2 border-white/50 dark:border-yellow-300/50">
+                                                <div className="relative bg-linear-to-r from-green-400 via-emerald-500 to-cyan-600 dark:from-cyan-500 dark:via-emerald-600 dark:to-green-700 rounded-2xl px-5 py-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 border-white/50 dark:border-cyan-300/50">
                                                     <div className="absolute inset-0 bg-white/10 dark:bg-black/10 rounded-2xl" />
-                                                    <div className="relative z-10">
-                                                        <p className="text-xs font-black text-white dark:text-gray-900 uppercase tracking-widest mb-1">Project Value</p>
-                                                        <p className="text-3xl font-black text-white dark:text-gray-900 tabular-nums leading-none">₹{project.value.toLocaleString()}</p>
+                                                    <div className="relative z-10 text-center">
+                                                        <p className="text-[10px] font-black text-white dark:text-gray-900 uppercase tracking-widest mb-0.5">Value</p>
+                                                        <p className="text-xl font-black text-white dark:text-gray-900 tabular-nums leading-none">₹{project.value.toLocaleString()}</p>
                                                     </div>
                                                 </div>
                                             </div>

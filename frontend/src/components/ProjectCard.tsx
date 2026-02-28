@@ -236,13 +236,17 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                                         <Pencil className="w-3.5 h-3.5 text-indigo-500 opacity-70 group-hover:opacity-100 transition shrink-0" />
                                     )}
                                 </div>
-                                {project.value && (
+                                {project.value !== undefined && (
                                     <div className="flex items-center gap-2">
-                                        <div className="relative bg-linear-to-r from-green-400 via-emerald-500 to-cyan-600 dark:from-cyan-500 dark:via-emerald-600 dark:to-green-700 rounded-2xl px-5 py-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 border-white/50 dark:border-cyan-300/50 w-full">
-                                            <div className="absolute inset-0 bg-white/10 dark:bg-black/10 rounded-2xl" />
+                                        <div className="relative bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 dark:from-indigo-600 dark:via-purple-600 dark:to-pink-600 rounded-2xl px-5 py-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-white/30 dark:border-white/10 w-full group overflow-hidden">
+                                            {/* Animated glare effect */}
+                                            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
                                             <div className="relative z-10 text-center">
-                                                <p className="text-xs font-black text-white dark:text-gray-900 uppercase tracking-widest mb-1">Value</p>
-                                                <p className="text-2xl font-black text-white dark:text-gray-900 tabular-nums">₹{project.value.toLocaleString()}</p>
+                                                <p className="text-[10px] font-black text-white/90 uppercase tracking-widest mb-0.5">Project Value</p>
+                                                <p className="text-2xl font-black text-white tabular-nums tracking-tight">
+                                                    ₹{project.value.toLocaleString()}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

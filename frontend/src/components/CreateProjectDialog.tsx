@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { projectsAPI } from '@/lib/api';
@@ -31,9 +31,19 @@ const projectSchema = z.object({
     sheetUrl: z.string().optional().or(z.literal('')),
     startDate: z.string().min(1, 'Start date is required'),
     deadline: z.string().optional(),
+    value: z.number().int().min(0).optional().default(0),
 });
 
-type ProjectForm = z.infer<typeof projectSchema>;
+interface ProjectForm {
+    title: string;
+    description?: string;
+    assignedToId?: string;
+    sheetOption: 'PROVIDED' | 'NOT_PROVIDED' | 'WILL_PROVIDE_LATER';
+    sheetUrl?: string;
+    startDate: string;
+    deadline?: string;
+    value?: number;
+}
 
 interface CreateProjectDialogProps {
     user: User;
@@ -52,16 +62,17 @@ export default function CreateProjectDialog({ user: currentUser, users, onClose,
         watch,
         formState: { errors },
     } = useForm<ProjectForm>({
-        resolver: zodResolver(projectSchema),
+        resolver: zodResolver(projectSchema) as any,
         defaultValues: {
             sheetOption: 'NOT_PROVIDED',
             startDate: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
+            value: 0,
         }
     });
 
     const sheetOption = watch('sheetOption');
 
-    const onSubmit = async (data: ProjectForm) => {
+    const onSubmit: SubmitHandler<ProjectForm> = async (data) => {
         try {
             setLoading(true);
             setError('');
@@ -212,6 +223,23 @@ export default function CreateProjectDialog({ user: currentUser, users, onClose,
                                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.deadline.message}</p>
                             )}
                         </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="value" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Project Value (₹)
+                        </label>
+                        <input
+                            {...register('value', { valueAsNumber: true })}
+                            type="number"
+                            id="value"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                            placeholder="Enter project value"
+                            min="0"
+                        />
+                        {errors.value && (
+                            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.value.message}</p>
+                        )}
                     </div>
 
                     <div className="flex gap-3 pt-4">
