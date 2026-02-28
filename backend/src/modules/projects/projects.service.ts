@@ -38,7 +38,20 @@ export class ProjectService {
                 startDate: (data.startDate && data.startDate !== '') ? new Date(data.startDate) : undefined,
                 deadline: (data.deadline && data.deadline !== '') ? new Date(data.deadline) : undefined,
             },
-            include: {
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                assignedToId: true,
+                createdById: true,
+                sheetUrl: true,
+                sheetOption: true,
+                startDate: true,
+                deadline: true,
+                value: true,
+                createdAt: true,
+                updatedAt: true,
                 assignedTo: {
                     select: {
                         id: true,
@@ -74,7 +87,20 @@ export class ProjectService {
 
         const projects = await prisma.project.findMany({
             where,
-            include: {
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                assignedToId: true,
+                createdById: true,
+                sheetUrl: true,
+                sheetOption: true,
+                startDate: true,
+                deadline: true,
+                value: true,
+                createdAt: true,
+                updatedAt: true,
                 assignedTo: {
                     select: {
                         id: true,
@@ -108,7 +134,20 @@ export class ProjectService {
     ) {
         const project = await prisma.project.findUnique({
             where: { id: projectId },
-            include: {
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                assignedToId: true,
+                createdById: true,
+                sheetUrl: true,
+                sheetOption: true,
+                startDate: true,
+                deadline: true,
+                value: true,
+                createdAt: true,
+                updatedAt: true,
                 assignedTo: {
                     select: {
                         id: true,
@@ -195,7 +234,20 @@ export class ProjectService {
                 startDate: (data.startDate && data.startDate !== '') ? new Date(data.startDate) : undefined,
                 deadline: (data.deadline && data.deadline !== '') ? new Date(data.deadline) : undefined,
             },
-            include: {
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                assignedToId: true,
+                createdById: true,
+                sheetUrl: true,
+                sheetOption: true,
+                startDate: true,
+                deadline: true,
+                value: true,
+                createdAt: true,
+                updatedAt: true,
                 assignedTo: {
                     select: {
                         id: true,

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
-import { projectsAPI, usersAPI } from '@/lib/api';
+import { projectsAPI, usersAPI, authAPI } from '@/lib/api';
 import { Project, User, ProjectStats } from '@/types';
 import AdminDashboard from '@/components/AdminDashboard';
 import LeaderDashboard from '@/components/LeaderDashboard';
@@ -71,9 +71,20 @@ export default function DashboardPage() {
         }
     };
 
-    const handleLogout = () => {
-        clearAuth();
-        router.push('/login');
+    const handleLogout = async () => {
+        try {
+            // Try to logout from the server
+            await authAPI.logout().catch(() => {
+                // Ignore errors from server logout, proceed with client cleanup
+            });
+        } catch {
+            // Silently ignore logout errors
+        } finally {
+            // Always clear local auth state
+            clearAuth();
+            // Navigate to login
+            router.replace('/login');
+        }
     };
 
     const handleProjectUpdated = () => {
@@ -84,7 +95,24 @@ export default function DashboardPage() {
         fetchData();
     };
 
-    if (!mounted || loading) {
+    if (!mounted) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    if (!user) {
+        router.push('/login');
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
                 <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
