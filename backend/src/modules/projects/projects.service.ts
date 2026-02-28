@@ -63,7 +63,14 @@ export class ProjectService {
      * Get all projects (role-based filtering)
      */
     static async getAllProjects(userId: string, userRole: 'ADMIN' | 'LEADER' | 'MEMBER') {
-        const where = (userRole === 'ADMIN' || userRole === 'LEADER') ? {} : { assignedToId: userId };
+        const where = (userRole === 'ADMIN' || userRole === 'LEADER')
+            ? {}
+            : {
+                OR: [
+                    { assignedToId: userId },
+                    { createdById: userId }
+                ]
+            };
 
         const projects = await prisma.project.findMany({
             where,
@@ -123,9 +130,9 @@ export class ProjectService {
             throw new NotFoundError('Project not found');
         }
 
-        // Members can only view their assigned projects
-        if (userRole === 'MEMBER' && project.assignedToId !== userId) {
-            throw new AuthorizationError('You can only view your assigned projects');
+        // Members can only view their assigned projects or projects they created
+        if (userRole === 'MEMBER' && project.assignedToId !== userId && project.createdById !== userId) {
+            throw new AuthorizationError('You can only view your assigned projects or projects you created');
         }
 
         return project;
@@ -157,10 +164,10 @@ export class ProjectService {
             throw new NotFoundError('Project not found');
         }
 
-        // Members can only update status of their assigned projects
+        // Members can only update status of their assigned projects or projects they created
         if (userRole !== 'ADMIN' && userRole !== 'LEADER') {
-            if (project.assignedToId !== userId) {
-                throw new AuthorizationError('You can only update your assigned projects');
+            if (project.assignedToId !== userId && project.createdById !== userId) {
+                throw new AuthorizationError('You can only update your assigned projects or projects you created');
             }
 
             // Members can only update status, title, and deadline
@@ -232,7 +239,14 @@ export class ProjectService {
      * Get project statistics
      */
     static async getProjectStats(userRole: 'ADMIN' | 'LEADER' | 'MEMBER', userId?: string) {
-        const where = (userRole === 'ADMIN' || userRole === 'LEADER') ? {} : { assignedToId: userId };
+        const where = (userRole === 'ADMIN' || userRole === 'LEADER')
+            ? {}
+            : {
+                OR: [
+                    { assignedToId: userId },
+                    { createdById: userId }
+                ]
+            };
 
         const projects = await prisma.project.findMany({
             where,

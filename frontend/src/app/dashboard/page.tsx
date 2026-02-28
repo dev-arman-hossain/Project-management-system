@@ -47,7 +47,7 @@ export default function DashboardPage() {
             setProjects(projectsRes.data.data.projects);
             setStats(statsRes.data.data);
 
-            if (isOwner) {
+            if (user) {
                 const usersRes = await usersAPI.getAll();
                 setUsers(usersRes.data.data.users);
             }
@@ -109,25 +109,21 @@ export default function DashboardPage() {
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
-                            {isOwner && (
-                                <>
-                                    {isAdmin() && (
-                                        <button
-                                            onClick={() => setShowUserManagement(true)}
-                                            className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition"
-                                        >
-                                            <Users className="w-4 h-4" />
-                                            Manage Users
-                                        </button>
-                                    )}
-                                    <button
-                                        onClick={() => setShowCreateProject(true)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
-                                    >
-                                        <Plus className="w-4 h-4" />
-                                        New Project
-                                    </button>
-                                </>
+                            <button
+                                onClick={() => setShowCreateProject(true)}
+                                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
+                            >
+                                <Plus className="w-4 h-4" />
+                                New Project
+                            </button>
+                            {isAdmin() && (
+                                <button
+                                    onClick={() => setShowUserManagement(true)}
+                                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition"
+                                >
+                                    <Users className="w-4 h-4" />
+                                    Manage Users
+                                </button>
                             )}
                             <button
                                 onClick={handleLogout}
@@ -190,20 +186,18 @@ export default function DashboardPage() {
                 {/* Projects Grid */}
                 <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                        {isOwner ? 'All Projects' : 'My Projects'}
+                        {isOwner ? 'All Projects' : 'My & Created Projects'}
                     </h2>
                     {projects.length === 0 ? (
                         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center border border-gray-200 dark:border-gray-700">
                             <FolderKanban className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                             <p className="text-gray-600 dark:text-gray-400">No projects found</p>
-                            {isAdmin() && (
-                                <button
-                                    onClick={() => setShowCreateProject(true)}
-                                    className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
-                                >
-                                    Create Your First Project
-                                </button>
-                            )}
+                            <button
+                                onClick={() => setShowCreateProject(true)}
+                                className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
+                            >
+                                Create Your First Project
+                            </button>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

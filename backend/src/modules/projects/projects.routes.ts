@@ -19,10 +19,10 @@ router.get('/', ProjectController.getAllProjects);
 // Get project statistics
 router.get('/stats', ProjectController.getProjectStats);
 
-// Create project (Admin and Leader)
+// Create project (Admin, Leader, and Member)
 router.post(
     '/',
-    authorize('ADMIN', 'LEADER'),
+    authorize('ADMIN', 'LEADER', 'MEMBER'),
     validate(createProjectSchema),
     ProjectController.createProject
 );
