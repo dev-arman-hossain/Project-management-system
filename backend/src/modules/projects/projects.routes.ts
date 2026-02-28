@@ -38,10 +38,10 @@ router.patch(
     ProjectController.updateProject
 );
 
-// Delete project (Admin and Leader)
+// Delete project (Admin, Leader, and Member)
 router.delete(
     '/:id',
-    authorize('ADMIN', 'LEADER'),
+    authorize('ADMIN', 'LEADER', 'MEMBER'),
     validate(projectIdSchema),
     ProjectController.deleteProject
 );

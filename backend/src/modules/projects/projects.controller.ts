@@ -91,7 +91,7 @@ export class ProjectController {
     static async deleteProject(req: Request, res: Response, next: NextFunction) {
         try {
             const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-            await ProjectService.deleteProject(id);
+            await ProjectService.deleteProject(id, req.user!.id, req.user!.role);
 
             res.status(200).json({
                 success: true,

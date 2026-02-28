@@ -217,15 +217,20 @@ export class ProjectService {
     }
 
     /**
-     * Delete project (Admin only)
+     * Delete project (Admin, Leader, or Creator)
      */
-    static async deleteProject(projectId: string) {
+    static async deleteProject(projectId: string, userId: string, userRole: 'ADMIN' | 'LEADER' | 'MEMBER') {
         const project = await prisma.project.findUnique({
             where: { id: projectId },
         });
 
         if (!project) {
             throw new NotFoundError('Project not found');
+        }
+
+        // Only Admin, Leader, or Creator can delete
+        if (userRole !== 'ADMIN' && userRole !== 'LEADER' && project.createdById !== userId) {
+            throw new AuthorizationError('You can only delete projects you created');
         }
 
         await prisma.project.delete({

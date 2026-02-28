@@ -239,7 +239,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                             </div>
                         )
                     )}
-                    {isGlobalOwner && (
+                    {(isGlobalOwner || (user?.id === project.createdById)) && (
                         <button onClick={handleDelete}
                             className="p-2 text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 rounded-lg transition" title="Delete Project">
                             <Trash2 className="w-4 h-4" />
