@@ -79,7 +79,7 @@ export default function DashboardPage() {
 
     const handleProjectCreated = () => {
         setShowCreateProject(false);
-        fetchData();
+        silentRefresh();
     };
 
     const handleProjectUpdated = () => {
