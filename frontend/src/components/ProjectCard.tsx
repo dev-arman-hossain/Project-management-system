@@ -207,7 +207,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
 
     return (
         <div className="flex flex-col h-full bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 hover:shadow-md transition">
-            <div className="flex-grow">
+            <div className="grow">
 
                 {/* ── Title row ── */}
                 <div className="flex items-start justify-between mb-4 gap-2">
@@ -225,14 +225,23 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                                 <button onClick={handleCancelTitle} className="p-1 text-gray-400 hover:bg-gray-100 rounded-lg transition"><X className="w-4 h-4" /></button>
                             </div>
                         ) : (
-                            <div
-                                className={`flex items-center gap-1.5 ${canEdit ? 'cursor-pointer group' : ''}`}
-                                onClick={() => canEdit && setEditingTitle(true)}
-                                title={canEdit ? "Click to edit name" : ""}
-                            >
-                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{localTitle}</h3>
-                                {canEdit && (
-                                    <Pencil className="w-3.5 h-3.5 text-indigo-500 opacity-70 group-hover:opacity-100 transition shrink-0" />
+                            <div className="space-y-2">
+                                <div
+                                    className={`flex items-center gap-1.5 ${canEdit ? 'cursor-pointer group' : ''}`}
+                                    onClick={() => canEdit && setEditingTitle(true)}
+                                    title={canEdit ? "Click to edit name" : ""}
+                                >
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{localTitle}</h3>
+                                    {canEdit && (
+                                        <Pencil className="w-3.5 h-3.5 text-indigo-500 opacity-70 group-hover:opacity-100 transition shrink-0" />
+                                    )}
+                                </div>
+                                {project.value && (
+                                    <div className="flex items-center gap-2">
+                                        <span className="inline-block px-3 py-1 text-sm font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg border border-indigo-300 dark:border-indigo-700">
+                                            Value: ₹{project.value.toLocaleString()}
+                                        </span>
+                                    </div>
                                 )}
                             </div>
                         )}
@@ -359,7 +368,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                             className={`w-full px-3 py-2.5 text-sm rounded-xl border-2 focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400 focus:outline-none transition-all appearance-none font-medium
                                 ${!canEdit ? 'opacity-70 cursor-not-allowed' : ''}
                                 bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C/polyline%3E%3C/svg%3E')]
-                                bg-[length:1.25rem_1.25rem] bg-[right_0.75rem_center] bg-no-repeat ${statusSelectStyles[localStatus]}`}
+                                bg-size-[1.25rem_1.25rem] bg-position-[right_0.75rem_center] bg-no-repeat ${statusSelectStyles[localStatus]}`}
                         >
                             {Object.entries(statusLabels).map(([value, label]) => (
                                 <option key={value} value={value}>{label}</option>

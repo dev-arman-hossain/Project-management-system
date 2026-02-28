@@ -9,6 +9,7 @@ export const createProjectSchema = z.object({
         sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']).optional(),
         startDate: z.string().optional().or(z.date().optional()),
         deadline: z.string().optional().or(z.date().optional()),
+        value: z.number().int().min(0).optional(),
     }),
 });
 
@@ -22,6 +23,7 @@ export const updateProjectSchema = z.object({
         sheetOption: z.enum(['PROVIDED', 'NOT_PROVIDED', 'WILL_PROVIDE_LATER']).optional(),
         startDate: z.string().optional().or(z.date().optional()),
         deadline: z.string().optional().or(z.date().optional()),
+        value: z.number().int().min(0).optional(),
     }),
 });
 

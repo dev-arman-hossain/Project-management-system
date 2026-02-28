@@ -28,6 +28,7 @@ export interface Project {
     sheetOption: SheetOption;
     startDate: string;
     deadline?: string;
+    value?: number;
     createdAt: string;
     updatedAt: string;
 }
