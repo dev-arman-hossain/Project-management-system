@@ -267,60 +267,71 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                 <div className="mt-4 space-y-4">
 
                     {/* ── Dates row ── */}
-                    <div className="grid grid-cols-2 gap-4 pb-2">
+                    <div className="grid grid-cols-2 gap-3 pb-2">
                         {/* Start date (read-only) */}
-                        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
-                            <div className="flex flex-col">
-                                <span className="text-[10px] uppercase tracking-wider text-gray-500 font-medium">Start Date</span>
-                                <span className="text-sm font-semibold">{formatDateTime(project.startDate)}</span>
+                        <div className="flex flex-col gap-1.5 p-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 transition-colors">
+                            <div className="flex items-center gap-1.5">
+                                <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                                <span className="text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-400 font-bold">Start Date</span>
                             </div>
+                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 pl-5">
+                                {formatDateTime(project.startDate)}
+                            </span>
                         </div>
 
                         {/* Delivery date — editable */}
-                        <div className={`flex items-start gap-2 ${editingDeadline ? 'col-span-2 mt-2 pt-2 border-t border-gray-100 dark:border-gray-700/50' : ''}`}>
-                            <CalendarX className="w-4 h-4 shrink-0 text-gray-400 mt-1" />
-                            <div className="flex flex-col flex-1 min-w-0">
-                                <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Delivery Date</span>
-                                {editingDeadline ? (
-                                    <div className="flex flex-col gap-3 mt-2">
-                                        <input
-                                            type="datetime-local"
-                                            value={localDeadline}
-                                            onChange={(e) => setLocalDeadline(e.target.value)}
-                                            onKeyDown={(e) => { if (e.key === 'Enter') handleSaveDeadline(); if (e.key === 'Escape') handleCancelDeadline(); }}
-                                            className="w-full px-3 py-2 text-sm border-2 border-indigo-400 rounded-xl bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 shadow-sm"
-                                        />
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={handleSaveDeadline}
-                                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition text-xs font-bold uppercase tracking-wider shadow-sm"
-                                            >
-                                                <Check className="w-4 h-4" /> Save Changes
-                                            </button>
-                                            <button
-                                                onClick={handleCancelDeadline}
-                                                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition text-xs font-bold uppercase tracking-wider"
-                                            >
-                                                <X className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div
-                                        className={`flex items-center gap-1 mt-0.5 ${canEdit ? 'group cursor-pointer' : ''}`}
-                                        onClick={() => canEdit && setEditingDeadline(true)}
-                                        title={canEdit ? "Click to edit deadline" : ""}
-                                    >
-                                        <span className={`text-sm ${getDeadlineDateColor()}`}>
-                                            {formatDateTime(localDeadline || project.deadline || '')}
-                                        </span>
-                                        {canEdit && (
-                                            <Pencil className="w-3 h-3 text-indigo-500 opacity-70 group-hover:opacity-100 transition shrink-0" />
-                                        )}
-                                    </div>
-                                )}
+                        <div className={`flex flex-col gap-1.5 p-2.5 rounded-xl transition-all duration-200 
+                        ${editingDeadline
+                                ? 'col-span-2 bg-indigo-50/30 dark:bg-indigo-900/10 border-2 border-indigo-200 dark:border-indigo-800/50'
+                                : 'bg-emerald-50/40 dark:bg-emerald-900/10 border border-emerald-100/50 dark:border-emerald-800/30'} 
+                    `}>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-1.5">
+                                    <CalendarX className={`w-3.5 h-3.5 ${editingDeadline ? 'text-indigo-500' : 'text-emerald-500 opacity-80'}`} />
+                                    <span className={`text-[10px] uppercase tracking-widest font-bold ${editingDeadline ? 'text-indigo-600 dark:text-indigo-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                                        Delivery Date
+                                    </span>
+                                </div>
                             </div>
+
+                            {editingDeadline ? (
+                                <div className="flex flex-col gap-3 mt-1">
+                                    <input
+                                        type="datetime-local"
+                                        value={localDeadline}
+                                        onChange={(e) => setLocalDeadline(e.target.value)}
+                                        onKeyDown={(e) => { if (e.key === 'Enter') handleSaveDeadline(); if (e.key === 'Escape') handleCancelDeadline(); }}
+                                        className="w-full px-3 py-2 text-sm border-2 border-indigo-400 rounded-xl bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 shadow-sm"
+                                    />
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={handleSaveDeadline}
+                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition text-xs font-bold uppercase tracking-wider shadow-sm"
+                                        >
+                                            <Check className="w-4 h-4" /> Save Schedule
+                                        </button>
+                                        <button
+                                            onClick={handleCancelDeadline}
+                                            className="px-4 py-2 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-600 rounded-lg transition text-xs font-bold uppercase tracking-wider"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div
+                                    className={`flex items-center gap-1.5 pl-5 ${canEdit ? 'group cursor-pointer' : ''}`}
+                                    onClick={() => canEdit && setEditingDeadline(true)}
+                                    title={canEdit ? "Click to edit deadline" : ""}
+                                >
+                                    <span className={`text-sm font-bold ${getDeadlineDateColor()}`}>
+                                        {formatDateTime(localDeadline || project.deadline || '')}
+                                    </span>
+                                    {canEdit && (
+                                        <Pencil className="w-3 h-3 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
