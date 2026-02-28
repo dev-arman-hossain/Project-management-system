@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/lib/store';
+import { useAuthStore, useDataCache } from '@/lib/store';
 import { projectsAPI } from '@/lib/api';
 import { Project, ProjectStats } from '@/types';
 import { BarChart3, TrendingUp, CheckCircle, Clock } from 'lucide-react';
@@ -12,6 +12,8 @@ import MonthlyProgress from '@/components/MonthlyProgress';
 export default function AnalyticsPage() {
     const router = useRouter();
     const { user, clearAuth, isAdmin, isLeader } = useAuthStore();
+    const { cache, setCacheData, isCacheValid } = useDataCache();
+    
     const [projects, setProjects] = useState<Project[]>([]);
     const [stats, setStats] = useState<ProjectStats | null>(null);
     const [loading, setLoading] = useState(true);
@@ -27,7 +29,22 @@ export default function AnalyticsPage() {
             router.push('/dashboard');
             return;
         }
-        fetchData();
+
+        // Check if we have valid cached data
+        if (isCacheValid()) {
+            // Use cached data immediately
+            const cachedData = cache;
+            if (cachedData) {
+                setProjects(cachedData.projects);
+                setStats(cachedData.stats);
+                setLoading(false);
+                // Silently refresh in background
+                silentRefresh();
+            }
+        } else {
+            // No valid cache, fetch fresh data with loading
+            fetchData();
+        }
     }, [user, mounted]);
 
     const fetchData = async () => {
@@ -37,12 +54,37 @@ export default function AnalyticsPage() {
                 projectsAPI.getAll(),
                 projectsAPI.getStats(),
             ]);
-            setProjects(projectsRes.data.data.projects);
-            setStats(statsRes.data.data);
+            const projectsData = projectsRes.data.data.projects;
+            const statsData = statsRes.data.data;
+            setProjects(projectsData);
+            setStats(statsData);
+            // Update cache
+            if (cache) {
+                setCacheData(projectsData, cache.users, statsData);
+            }
         } catch (error) {
             console.error('Failed to fetch analytics:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const silentRefresh = async () => {
+        try {
+            const [projectsRes, statsRes] = await Promise.all([
+                projectsAPI.getAll(),
+                projectsAPI.getStats(),
+            ]);
+            const projectsData = projectsRes.data.data.projects;
+            const statsData = statsRes.data.data;
+            setProjects(projectsData);
+            setStats(statsData);
+            // Update cache
+            if (cache) {
+                setCacheData(projectsData, cache.users, statsData);
+            }
+        } catch (error) {
+            console.error('Failed to refresh analytics:', error);
         }
     };
 

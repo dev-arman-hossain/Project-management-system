@@ -180,7 +180,7 @@ export default function MemberDashboard({
                                     key={project.id}
                                     className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                                 >
-                                    <div className="flex items-start justify-between">
+                                    <div className="flex items-start justify-between gap-4">
                                         <div className="flex-1">
                                             <h4 className="font-medium text-gray-900 dark:text-white">{project.title}</h4>
                                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -213,6 +213,13 @@ export default function MemberDashboard({
                                                 )}
                                             </div>
                                         </div>
+                                        {project.value && (
+                                            <div className="shrink-0 text-right">
+                                                <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                                                    ₹{project.value.toLocaleString()}
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             );

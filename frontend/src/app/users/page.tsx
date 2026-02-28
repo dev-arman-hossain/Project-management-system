@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/lib/store';
+import { useAuthStore, useDataCache } from '@/lib/store';
 import { usersAPI } from '@/lib/api';
 import { User } from '@/types';
 import { Users, Shield, User2 } from 'lucide-react';
@@ -11,6 +11,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 export default function UsersPage() {
     const router = useRouter();
     const { user: currentUser, clearAuth, isAdmin } = useAuthStore();
+    const { cache, setCacheData, isCacheValid } = useDataCache();
+    
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
@@ -25,18 +27,51 @@ export default function UsersPage() {
             router.push('/dashboard');
             return;
         }
-        fetchUsers();
+
+        // Check if we have valid cached data
+        if (isCacheValid()) {
+            // Use cached data immediately
+            const cachedData = cache;
+            if (cachedData) {
+                setUsers(cachedData.users);
+                setLoading(false);
+                // Silently refresh in background
+                silentRefresh();
+            }
+        } else {
+            // No valid cache, fetch fresh data with loading
+            fetchUsers();
+        }
     }, [currentUser, mounted]);
 
     const fetchUsers = async () => {
         try {
             setLoading(true);
             const res = await usersAPI.getAll();
-            setUsers(res.data.data.users);
+            const usersData = res.data.data.users;
+            setUsers(usersData);
+            // Update cache
+            if (cache) {
+                setCacheData(cache.projects, usersData, cache.stats);
+            }
         } catch (error) {
             console.error('Failed to fetch users:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const silentRefresh = async () => {
+        try {
+            const res = await usersAPI.getAll();
+            const usersData = res.data.data.users;
+            setUsers(usersData);
+            // Update cache
+            if (cache) {
+                setCacheData(cache.projects, usersData, cache.stats);
+            }
+        } catch (error) {
+            console.error('Failed to refresh users:', error);
         }
     };
 

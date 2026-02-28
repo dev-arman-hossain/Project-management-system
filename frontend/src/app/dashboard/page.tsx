@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/lib/store';
+import { useAuthStore, useDataCache } from '@/lib/store';
 import { projectsAPI, usersAPI, authAPI } from '@/lib/api';
 import { Project, User, ProjectStats } from '@/types';
 import AdminDashboard from '@/components/AdminDashboard';
@@ -14,6 +14,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 export default function DashboardPage() {
     const router = useRouter();
     const { user, clearAuth, isAdmin, isLeader } = useAuthStore();
+    const { cache, setCacheData, isCacheValid, clearCache } = useDataCache();
+    
     const [projects, setProjects] = useState<Project[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [stats, setStats] = useState<ProjectStats | null>(null);
@@ -31,7 +33,23 @@ export default function DashboardPage() {
             router.push('/login');
             return;
         }
-        fetchData();
+
+        // Check if we have valid cached data
+        if (isCacheValid()) {
+            // Use cached data immediately (no loading)
+            const cachedData = cache;
+            if (cachedData) {
+                setProjects(cachedData.projects);
+                setUsers(cachedData.users);
+                setStats(cachedData.stats);
+                setLoading(false);
+                // Silently refresh in background
+                silentRefresh();
+            }
+        } else {
+            // No valid cache, fetch fresh data with loading
+            fetchData();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, router, mounted]);
 
@@ -43,12 +61,18 @@ export default function DashboardPage() {
                 projectsAPI.getStats(),
             ]);
 
-            setProjects(projectsRes.data.data.projects);
-            setStats(statsRes.data.data);
+            const projectsData = projectsRes.data.data.projects;
+            const statsData = statsRes.data.data;
+            
+            setProjects(projectsData);
+            setStats(statsData);
 
             if (user) {
                 const usersRes = await usersAPI.getAll();
-                setUsers(usersRes.data.data.users);
+                const usersData = usersRes.data.data.users;
+                setUsers(usersData);
+                // Update cache
+                setCacheData(projectsData, usersData, statsData);
             }
         } catch (error) {
             console.error('Failed to fetch data:', error);
@@ -64,8 +88,18 @@ export default function DashboardPage() {
                 projectsAPI.getAll(),
                 projectsAPI.getStats(),
             ]);
-            setProjects(projectsRes.data.data.projects);
-            setStats(statsRes.data.data);
+            const projectsData = projectsRes.data.data.projects;
+            const statsData = statsRes.data.data;
+            setProjects(projectsData);
+            setStats(statsData);
+
+            if (user) {
+                const usersRes = await usersAPI.getAll();
+                const usersData = usersRes.data.data.users;
+                setUsers(usersData);
+                // Update cache
+                setCacheData(projectsData, usersData, statsData);
+            }
         } catch (error) {
             console.error('Failed to refresh data:', error);
         }
@@ -80,7 +114,8 @@ export default function DashboardPage() {
         } catch {
             // Silently ignore logout errors
         } finally {
-            // Always clear local auth state
+            // Clear cache and auth state
+            clearCache();
             clearAuth();
             // Navigate to login
             router.replace('/login');
@@ -92,7 +127,7 @@ export default function DashboardPage() {
     };
 
     const handleUsersUpdated = () => {
-        fetchData();
+        silentRefresh();
     };
 
     if (!mounted) {

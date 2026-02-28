@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/lib/store';
+import { useAuthStore, useDataCache } from '@/lib/store';
 import { projectsAPI } from '@/lib/api';
 import { Project } from '@/types';
 import { FolderKanban } from 'lucide-react';
@@ -12,6 +12,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 export default function ProjectsPage() {
     const router = useRouter();
     const { user, clearAuth } = useAuthStore();
+    const { cache, setCacheData, isCacheValid } = useDataCache();
+    
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
@@ -26,18 +28,51 @@ export default function ProjectsPage() {
             router.push('/login');
             return;
         }
-        fetchProjects();
+
+        // Check if we have valid cached data
+        if (isCacheValid()) {
+            // Use cached data immediately
+            const cachedData = cache;
+            if (cachedData) {
+                setProjects(cachedData.projects);
+                setLoading(false);
+                // Silently refresh in background
+                silentRefresh();
+            }
+        } else {
+            // No valid cache, fetch fresh data with loading
+            fetchProjects();
+        }
     }, [user, mounted]);
 
     const fetchProjects = async () => {
         try {
             setLoading(true);
             const res = await projectsAPI.getAll();
-            setProjects(res.data.data.projects);
+            const projectsData = res.data.data.projects;
+            setProjects(projectsData);
+            // Update cache with new projects
+            if (cache) {
+                setCacheData(projectsData, cache.users, cache.stats);
+            }
         } catch (error) {
             console.error('Failed to fetch projects:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const silentRefresh = async () => {
+        try {
+            const res = await projectsAPI.getAll();
+            const projectsData = res.data.data.projects;
+            setProjects(projectsData);
+            // Update cache
+            if (cache) {
+                setCacheData(projectsData, cache.users, cache.stats);
+            }
+        } catch (error) {
+            console.error('Failed to refresh projects:', error);
         }
     };
 
