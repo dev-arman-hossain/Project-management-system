@@ -54,3 +54,15 @@ export interface ApiResponse<T = any> {
     };
     message?: string;
 }
+
+export interface ProjectStats {
+    total: number;
+    byStatus: {
+        WIP: number;
+        NRA: number;
+        DELIVERED: number;
+        REVISION: number;
+        CANCELED: number;
+        COMPLETED: number;
+    };
+}
