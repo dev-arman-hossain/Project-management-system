@@ -274,7 +274,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                                 <Calendar className="w-3.5 h-3.5 text-gray-400" />
                                 <span className="text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-400 font-bold">Start Date</span>
                             </div>
-                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 pl-5">
+                            <span className="text-[11px] font-semibold text-gray-700 dark:text-gray-200 pl-5">
                                 {formatDateTime(project.startDate)}
                             </span>
                         </div>
@@ -324,7 +324,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                                     onClick={() => canEdit && setEditingDeadline(true)}
                                     title={canEdit ? "Click to edit deadline" : ""}
                                 >
-                                    <span className={`text-sm font-bold ${getDeadlineDateColor()}`}>
+                                    <span className={`text-[11px] font-bold ${getDeadlineDateColor()}`}>
                                         {formatDateTime(localDeadline || project.deadline || '')}
                                     </span>
                                     {canEdit && (
