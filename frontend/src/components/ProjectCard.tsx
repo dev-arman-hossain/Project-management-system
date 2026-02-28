@@ -327,7 +327,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
 
                 {/* ── Footer ── */}
                 <div className="pt-2 space-y-4">
-                    {project.assignedTo && (
+                    {project.assignedTo && user?.role !== 'MEMBER' && (
                         <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 px-1">
                             <User className="w-3.5 h-3.5" />
                             <span>Assigned to: <span className="font-semibold text-gray-700 dark:text-gray-300">{project.assignedTo.name}</span></span>
@@ -338,9 +338,6 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                     <div className="space-y-2">
                         <div className="flex items-center justify-between px-1">
                             <label className="text-[10px] uppercase tracking-widest font-bold text-gray-400">Project Status</label>
-                            <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusBadgeColors[localStatus]}`}>
-                                {statusLabels[localStatus]}
-                            </span>
                         </div>
                         <select
                             value={localStatus}
