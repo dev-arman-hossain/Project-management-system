@@ -130,7 +130,7 @@ export default function DashboardPage() {
         silentRefresh();
     };
 
-    if (!mounted) {
+    if (!mounted && !isCacheValid()) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
                 <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
@@ -138,7 +138,7 @@ export default function DashboardPage() {
         );
     }
 
-    if (!user) {
+    if (!user && mounted) {
         router.push('/login');
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -147,7 +147,7 @@ export default function DashboardPage() {
         );
     }
 
-    if (loading) {
+    if (loading && !isCacheValid()) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
                 <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />

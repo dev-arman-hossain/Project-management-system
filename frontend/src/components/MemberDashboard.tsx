@@ -227,13 +227,12 @@ export default function MemberDashboard({
                                                 )}
                                             </div>
                                         </div>
-                                        {project.value && project.value > 0 && (
+                                        {typeof project.value === 'number' && project.value > 0 && (
                                             <div className="shrink-0">
-                                                <div className="relative bg-linear-to-r from-green-400 via-emerald-500 to-cyan-600 dark:from-cyan-500 dark:via-emerald-600 dark:to-green-700 rounded-2xl px-5 py-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 border-white/50 dark:border-cyan-300/50">
-                                                    <div className="absolute inset-0 bg-white/10 dark:bg-black/10 rounded-2xl" />
-                                                    <div className="relative z-10 text-center">
-                                                        <p className="text-[10px] font-black text-white dark:text-gray-900 uppercase tracking-widest mb-0.5">Value</p>
-                                                        <p className="text-xl font-black text-white dark:text-gray-900 tabular-nums leading-none">₹{project.value.toLocaleString()}</p>
+                                                <div className="relative bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-500 dark:from-emerald-600 dark:via-teal-600 dark:to-cyan-700 rounded-xl px-4 py-2 shadow-lg group-hover:shadow-xl transition-all border border-white/20 dark:border-white/5">
+                                                    <div className="relative z-10 text-right">
+                                                        <p className="text-[10px] font-bold text-white/80 dark:text-gray-900/70 uppercase tracking-widest leading-none mb-1">Value</p>
+                                                        <p className="text-lg font-black text-white dark:text-gray-900 tabular-nums leading-none">₹{project.value.toLocaleString()}</p>
                                                     </div>
                                                 </div>
                                             </div>
