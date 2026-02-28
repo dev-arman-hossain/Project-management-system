@@ -125,7 +125,6 @@ export default function DashboardPage() {
                 <MemberDashboard
                     user={user!}
                     projects={projects}
-                    stats={stats}
                     onProjectUpdated={handleProjectUpdated}
                 />
             )}
