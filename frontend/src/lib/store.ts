@@ -9,6 +9,7 @@ interface AuthStore {
     clearAuth: () => void;
     isAuthenticated: () => boolean;
     isAdmin: () => boolean;
+    isLeader: () => boolean;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -37,6 +38,11 @@ export const useAuthStore = create<AuthStore>()(
             isAdmin: () => {
                 const { user } = get();
                 return user?.role === 'ADMIN';
+            },
+
+            isLeader: () => {
+                const { user } = get();
+                return user?.role === 'LEADER';
             },
         }),
         {

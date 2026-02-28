@@ -12,7 +12,8 @@ import UserManagement from '@/components/UserManagement';
 
 export default function DashboardPage() {
     const router = useRouter();
-    const { user, clearAuth, isAdmin } = useAuthStore();
+    const { user, clearAuth, isAdmin, isLeader } = useAuthStore();
+    const isOwner = isAdmin() || isLeader();
     const [projects, setProjects] = useState<Project[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [stats, setStats] = useState<any>(null);
@@ -40,7 +41,7 @@ export default function DashboardPage() {
             setProjects(projectsRes.data.data.projects);
             setStats(statsRes.data.data);
 
-            if (isAdmin()) {
+            if (isOwner) {
                 const usersRes = await usersAPI.getAll();
                 setUsers(usersRes.data.data.users);
             }
@@ -48,6 +49,20 @@ export default function DashboardPage() {
             console.error('Failed to fetch data:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Silent background refresh — no loading spinner, used after status changes
+    const silentRefresh = async () => {
+        try {
+            const [projectsRes, statsRes] = await Promise.all([
+                projectsAPI.getAll(),
+                projectsAPI.getStats(),
+            ]);
+            setProjects(projectsRes.data.data.projects);
+            setStats(statsRes.data.data);
+        } catch (error) {
+            console.error('Failed to refresh data:', error);
         }
     };
 
@@ -62,7 +77,7 @@ export default function DashboardPage() {
     };
 
     const handleProjectUpdated = () => {
-        fetchData();
+        silentRefresh();
     };
 
     if (loading) {
@@ -88,15 +103,17 @@ export default function DashboardPage() {
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
-                            {isAdmin() && (
+                            {isOwner && (
                                 <>
-                                    <button
-                                        onClick={() => setShowUserManagement(true)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition"
-                                    >
-                                        <Users className="w-4 h-4" />
-                                        Manage Users
-                                    </button>
+                                    {isAdmin() && (
+                                        <button
+                                            onClick={() => setShowUserManagement(true)}
+                                            className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition"
+                                        >
+                                            <Users className="w-4 h-4" />
+                                            Manage Users
+                                        </button>
+                                    )}
                                     <button
                                         onClick={() => setShowCreateProject(true)}
                                         className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
@@ -167,7 +184,7 @@ export default function DashboardPage() {
                 {/* Projects Grid */}
                 <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                        {isAdmin() ? 'All Projects' : 'My Projects'}
+                        {isOwner ? 'All Projects' : 'My Projects'}
                     </h2>
                     {projects.length === 0 ? (
                         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center border border-gray-200 dark:border-gray-700">
@@ -189,7 +206,7 @@ export default function DashboardPage() {
                                     key={project.id}
                                     project={project}
                                     onUpdate={handleProjectUpdated}
-                                    isAdmin={isAdmin()}
+                                    isAdmin={isOwner}
                                 />
                             ))}
                         </div>

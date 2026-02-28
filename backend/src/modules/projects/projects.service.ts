@@ -163,9 +163,10 @@ export class ProjectService {
                 throw new AuthorizationError('You can only update your assigned projects');
             }
 
-            // Members can only update status
-            if (Object.keys(data).some((key) => key !== 'status')) {
-                throw new AuthorizationError('You can only update project status');
+            // Members can only update status, title, and deadline
+            const allowedKeys = ['status', 'title', 'deadline'];
+            if (Object.keys(data).some((key) => !allowedKeys.includes(key))) {
+                throw new AuthorizationError('You can only update project status, title, and deadline');
             }
         }
 

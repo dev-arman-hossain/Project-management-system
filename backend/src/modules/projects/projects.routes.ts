@@ -19,10 +19,10 @@ router.get('/', ProjectController.getAllProjects);
 // Get project statistics
 router.get('/stats', ProjectController.getProjectStats);
 
-// Create project (Admin only)
+// Create project (Admin and Leader)
 router.post(
     '/',
-    authorize('ADMIN'),
+    authorize('ADMIN', 'LEADER'),
     validate(createProjectSchema),
     ProjectController.createProject
 );
@@ -30,7 +30,7 @@ router.post(
 // Get project by ID
 router.get('/:id', validate(projectIdSchema), ProjectController.getProjectById);
 
-// Update project (Admin can update all fields, Members can only update status)
+// Update project (Admin/Leader can update all fields, Members can only update status, title, deadline)
 router.patch(
     '/:id',
     validate(projectIdSchema),
@@ -38,10 +38,10 @@ router.patch(
     ProjectController.updateProject
 );
 
-// Delete project (Admin only)
+// Delete project (Admin and Leader)
 router.delete(
     '/:id',
-    authorize('ADMIN'),
+    authorize('ADMIN', 'LEADER'),
     validate(projectIdSchema),
     ProjectController.deleteProject
 );

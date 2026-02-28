@@ -9,8 +9,8 @@ const router = Router();
 // All routes require authentication
 router.use(authenticate);
 
-// Get all users (Admin only)
-router.get('/', authorize('ADMIN'), UserController.getAllUsers);
+// Get all users (Admin and Leader)
+router.get('/', authorize('ADMIN', 'LEADER'), UserController.getAllUsers);
 
 // Get user by ID
 router.get('/:id', validate(userIdSchema), UserController.getUserById);
@@ -18,19 +18,19 @@ router.get('/:id', validate(userIdSchema), UserController.getUserById);
 // Get user statistics
 router.get('/:id/stats', validate(userIdSchema), UserController.getUserStats);
 
-// Update user (Admin only)
+// Update user (Admin and Leader)
 router.patch(
     '/:id',
-    authorize('ADMIN'),
+    authorize('ADMIN', 'LEADER'),
     validate(userIdSchema),
     validate(updateUserSchema),
     UserController.updateUser
 );
 
-// Delete user (Admin only)
+// Delete user (Admin and Leader)
 router.delete(
     '/:id',
-    authorize('ADMIN'),
+    authorize('ADMIN', 'LEADER'),
     validate(userIdSchema),
     UserController.deleteUser
 );
