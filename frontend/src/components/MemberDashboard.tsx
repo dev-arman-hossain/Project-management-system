@@ -129,7 +129,7 @@ export default function MemberDashboard({
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Delivery</p>
-                            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">₹{memberStats.totalValue.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">${memberStats.totalValue.toLocaleString()}</p>
                         </div>
                         <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
                             <IndianRupee className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
@@ -209,7 +209,7 @@ export default function MemberDashboard({
                                                 <div className="px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-700/30 border border-gray-200 dark:border-gray-600 shadow-sm">
                                                     <div className="text-right">
                                                         <p className="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none mb-0.5">Value</p>
-                                                        <p className="text-base font-bold text-gray-900 dark:text-white tabular-nums leading-none">₹{project.value.toLocaleString()}</p>
+                                                        <p className="text-base font-bold text-gray-900 dark:text-white tabular-nums leading-none">${project.value.toLocaleString()}</p>
                                                     </div>
                                                 </div>
                                             </div>

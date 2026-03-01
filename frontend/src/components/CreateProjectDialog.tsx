@@ -227,7 +227,7 @@ export default function CreateProjectDialog({ user: currentUser, users, onClose,
 
                     <div>
                         <label htmlFor="value" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Project Value (₹)
+                            Project Value ($)
                         </label>
                         <input
                             {...register('value', { valueAsNumber: true })}

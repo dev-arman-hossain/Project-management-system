@@ -68,7 +68,7 @@ export default function MonthlyProgress({ projects }: MonthlyProgressProps) {
                             <div className="relative z-10 text-center">
                                 <p className="text-xs font-black text-white dark:text-gray-900 uppercase tracking-widest">Total Value</p>
                                 <p className="text-2xl font-black text-white dark:text-gray-900 tabular-nums">
-                                    ₹{totalCompletedValue.toLocaleString()}
+                                    ${totalCompletedValue.toLocaleString()}
                                 </p>
                             </div>
                         </div>
@@ -99,7 +99,7 @@ export default function MonthlyProgress({ projects }: MonthlyProgressProps) {
                                             <div className="relative bg-linear-to-r from-rose-400 via-pink-500 to-red-500 dark:from-red-500 dark:via-pink-600 dark:to-rose-600 rounded-lg px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 border border-white/40 dark:border-rose-300/40">
                                                 <div className="absolute inset-0 bg-white/10 dark:bg-black/10 rounded-lg" />
                                                 <p className="relative z-10 text-xs font-black text-white dark:text-gray-900 uppercase tracking-wider">
-                                                    ₹{data.totalValue.toLocaleString()}
+                                                    ${data.totalValue.toLocaleString()}
                                                 </p>
                                             </div>
                                         )}

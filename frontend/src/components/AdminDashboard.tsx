@@ -104,7 +104,7 @@ export default function AdminDashboard({
                         <div>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Delivery</p>
                             <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">
-                                ₹{(stats?.totalValue || 0).toLocaleString()}
+                                ${(stats?.totalValue || 0).toLocaleString()}
                             </p>
                         </div>
                         <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">

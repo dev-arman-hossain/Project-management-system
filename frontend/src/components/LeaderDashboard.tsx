@@ -110,7 +110,7 @@ export default function LeaderDashboard({
                         <div>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Delivery</p>
                             <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">
-                                ₹{projects
+                                ${projects
                                     .filter((p) => (p.status === 'COMPLETED' || p.status === 'DELIVERED') && p.createdById === user.id)
                                     .reduce((sum, p) => sum + (p.value || 0), 0)
                                     .toLocaleString()}

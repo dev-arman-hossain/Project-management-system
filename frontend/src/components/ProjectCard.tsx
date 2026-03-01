@@ -239,7 +239,7 @@ export default function ProjectCard({ project, onUpdate, isAdmin: isGlobalOwner 
                                     </div>
                                     {typeof project.value === 'number' && (
                                         <span className="shrink-0 px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-sm font-bold border border-gray-200 dark:border-gray-600">
-                                            ₹{project.value.toLocaleString()}
+                                            ${project.value.toLocaleString()}
                                         </span>
                                     )}
                                 </div>
