@@ -66,4 +66,5 @@ export interface ProjectStats {
         CANCELED: number;
         COMPLETED: number;
     };
+    totalValue: number;
 }

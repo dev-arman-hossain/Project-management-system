@@ -15,8 +15,8 @@ export default function ProjectsPage() {
     const { user, clearAuth } = useAuthStore();
     const { cache, setCacheData, isCacheValid } = useDataCache();
 
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [users, setUsers] = useState<User[]>([]);
+    const [projects, setProjects] = useState<Project[]>(useDataCache.getState().cache?.projects || []);
+    const [users, setUsers] = useState<User[]>(useDataCache.getState().cache?.users || []);
     const [loading, setLoading] = useState(!isCacheValid());
     const [showCreateProject, setShowCreateProject] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -140,14 +140,20 @@ export default function ProjectsPage() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {projects.map((project) => (
-                            <ProjectCard
-                                key={project.id}
-                                project={project}
-                                onUpdate={fetchData}
-                                isAdmin={user?.role !== 'MEMBER' || project.assignedToId === user?.id}
-                            />
-                        ))}
+                        {projects
+                            .filter((project) =>
+                                user?.role !== 'MEMBER' ||
+                                project.assignedToId === user?.id ||
+                                project.createdById === user?.id
+                            )
+                            .map((project) => (
+                                <ProjectCard
+                                    key={project.id}
+                                    project={project}
+                                    onUpdate={fetchData}
+                                    isAdmin={user?.role !== 'MEMBER' || project.createdById === user?.id || project.assignedToId === user?.id}
+                                />
+                            ))}
                     </div>
                 )}
             </div>

@@ -312,17 +312,28 @@ export class ProjectService {
             where,
             select: {
                 status: true,
+                value: true,
             },
         });
 
-        const stats = projects.reduce((acc: Record<string, number>, project: { status: string }) => {
-            acc[project.status] = (acc[project.status] || 0) + 1;
+        const stats = projects.reduce((acc: any, project: { status: string; value?: number | null }) => {
+            acc.byStatus[project.status] = (acc.byStatus[project.status] || 0) + 1;
+
+            // Sum values for delivered/completed projects
+            if (project.status === 'COMPLETED' || project.status === 'DELIVERED') {
+                acc.totalValue += Number(project.value || 0);
+            }
+
             return acc;
-        }, {} as Record<string, number>);
+        }, {
+            byStatus: {} as Record<string, number>,
+            totalValue: 0
+        });
 
         return {
             total: projects.length,
-            byStatus: stats,
+            byStatus: stats.byStatus,
+            totalValue: stats.totalValue,
         };
     }
 }

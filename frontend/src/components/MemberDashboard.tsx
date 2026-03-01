@@ -10,6 +10,7 @@ import {
     UserCheck,
     Calendar,
     Plus,
+    IndianRupee,
 } from 'lucide-react';
 import { Project, User } from '@/types';
 import ProjectCard from './ProjectCard';
@@ -30,7 +31,7 @@ export default function MemberDashboard({
 
     // Filter projects assigned to this member
     const assignedProjects = useMemo(() => {
-        return projects.filter((p) => p.assignedToId === user.id);
+        return projects.filter((p) => p.assignedToId === user.id || p.createdById === user.id);
     }, [projects, user.id]);
 
     // Calculate statistics for assigned projects
@@ -41,6 +42,9 @@ export default function MemberDashboard({
             inProgress: assignedProjects.filter((p) => p.status === 'WIP').length,
             revision: assignedProjects.filter((p) => p.status === 'REVISION').length,
             canceled: assignedProjects.filter((p) => p.status === 'CANCELED').length,
+            totalValue: assignedProjects
+                .filter((p) => p.status === 'COMPLETED' || p.status === 'DELIVERED')
+                .reduce((sum, p) => sum + (p.value || 0), 0),
         };
     }, [assignedProjects]);
 
@@ -72,102 +76,75 @@ export default function MemberDashboard({
             </div>
 
             {/* Overview Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Assigned Projects</p>
-                            <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{memberStats.total}</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Assigned</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{memberStats.total}</p>
                         </div>
-                        <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
-                            <FolderKanban className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                        <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center">
+                            <FolderKanban className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">In Progress</p>
-                            <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{memberStats.inProgress}</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">In Progress</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{memberStats.inProgress}</p>
                         </div>
-                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                            <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                        <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                            <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Completed</p>
-                            <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{memberStats.completed}</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Completed</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{memberStats.completed}</p>
                         </div>
-                        <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                            <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                        <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Completion Rate</p>
-                            <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{completionRate}%</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Revision</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{memberStats.revision}</p>
                         </div>
-                        <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                            <UserCheck className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Project Status Breakdown */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">In Progress</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">{memberStats.inProgress}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                            <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                        <div className="w-10 h-10 bg-amber-50 dark:bg-amber-900/20 rounded-lg flex items-center justify-center">
+                            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Completed</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">{memberStats.completed}</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Delivery</p>
+                            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">₹{memberStats.totalValue.toLocaleString()}</p>
                         </div>
-                        <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                            <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                        <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
+                            <IndianRupee className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Revision</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">{memberStats.revision}</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rate</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{completionRate}%</p>
                         </div>
-                        <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
-                            <AlertCircle className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Canceled</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">{memberStats.canceled}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
-                            <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+                        <div className="w-10 h-10 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                            <UserCheck className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                         </div>
                     </div>
                 </div>

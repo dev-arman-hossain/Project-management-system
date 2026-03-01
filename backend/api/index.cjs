@@ -59127,16 +59127,24 @@ var ProjectService = class {
     const projects = await prisma.project.findMany({
       where,
       select: {
-        status: true
+        status: true,
+        value: true
       }
     });
     const stats = projects.reduce((acc, project) => {
-      acc[project.status] = (acc[project.status] || 0) + 1;
+      acc.byStatus[project.status] = (acc.byStatus[project.status] || 0) + 1;
+      if (project.status === "COMPLETED" || project.status === "DELIVERED") {
+        acc.totalValue += Number(project.value || 0);
+      }
       return acc;
-    }, {});
+    }, {
+      byStatus: {},
+      totalValue: 0
+    });
     return {
       total: projects.length,
-      byStatus: stats
+      byStatus: stats.byStatus,
+      totalValue: stats.totalValue
     };
   }
 };

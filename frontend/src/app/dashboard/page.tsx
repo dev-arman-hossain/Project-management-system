@@ -16,9 +16,9 @@ export default function DashboardPage() {
     const { user, clearAuth, isAdmin, isLeader } = useAuthStore();
     const { cache, setCacheData, isCacheValid, clearCache } = useDataCache();
 
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [users, setUsers] = useState<User[]>([]);
-    const [stats, setStats] = useState<ProjectStats | null>(null);
+    const [projects, setProjects] = useState<Project[]>(useDataCache.getState().cache?.projects || []);
+    const [users, setUsers] = useState<User[]>(useDataCache.getState().cache?.users || []);
+    const [stats, setStats] = useState<ProjectStats | null>(useDataCache.getState().cache?.stats || null);
     const [loading, setLoading] = useState(!isCacheValid());
     const [showUserManagement, setShowUserManagement] = useState(false);
     const [mounted, setMounted] = useState(false);

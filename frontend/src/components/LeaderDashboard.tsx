@@ -10,6 +10,7 @@ import {
     AlertCircle,
     XCircle,
     Plus,
+    IndianRupee,
 } from 'lucide-react';
 import { Project, User, ProjectStats } from '@/types';
 import ProjectCard from './ProjectCard';
@@ -101,6 +102,22 @@ export default function LeaderDashboard({
                         </div>
                         <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
                             <BarChart3 className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Delivery</p>
+                            <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">
+                                ₹{projects
+                                    .filter((p) => (p.status === 'COMPLETED' || p.status === 'DELIVERED') && p.createdById === user.id)
+                                    .reduce((sum, p) => sum + (p.value || 0), 0)
+                                    .toLocaleString()}
+                            </p>
+                        </div>
+                        <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                            <IndianRupee className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                         </div>
                     </div>
                 </div>
