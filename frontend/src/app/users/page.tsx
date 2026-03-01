@@ -12,7 +12,7 @@ export default function UsersPage() {
     const router = useRouter();
     const { user: currentUser, clearAuth, isAdmin } = useAuthStore();
     const { cache, setCacheData, isCacheValid } = useDataCache();
-    
+
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
@@ -165,10 +165,14 @@ export default function UsersPage() {
                                         className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
-                                                <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
-                                                    {u.name.charAt(0).toUpperCase()}
-                                                </span>
+                                            <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center overflow-hidden">
+                                                {u.profilePhoto ? (
+                                                    <img src={u.profilePhoto} alt={u.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                                                        {u.name.charAt(0).toUpperCase()}
+                                                    </span>
+                                                )}
                                             </div>
                                             <div>
                                                 <p className="font-medium text-gray-900 dark:text-white">{u.name}</p>

@@ -3,6 +3,7 @@ export interface User {
     email: string;
     name: string;
     role: 'ADMIN' | 'LEADER' | 'MEMBER';
+    profilePhoto?: string;
     createdAt?: string;
     updatedAt?: string;
 }

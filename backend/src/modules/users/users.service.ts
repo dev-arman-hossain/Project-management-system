@@ -1,5 +1,6 @@
 import { prisma } from '../../lib/prisma';
 import { NotFoundError, AuthorizationError } from '../../utils/errors';
+import { convertDriveLink } from '../../utils/url.utils';
 import bcrypt from 'bcryptjs';
 
 export class UserService {
@@ -13,6 +14,7 @@ export class UserService {
                 email: true,
                 name: true,
                 role: true,
+                profilePhoto: true,
                 createdAt: true,
                 updatedAt: true,
                 _count: {
@@ -40,6 +42,7 @@ export class UserService {
                 email: true,
                 name: true,
                 role: true,
+                profilePhoto: true,
                 createdAt: true,
                 updatedAt: true,
                 assignedProjects: {
@@ -70,6 +73,7 @@ export class UserService {
             email?: string;
             password?: string;
             role?: 'ADMIN' | 'LEADER' | 'MEMBER';
+            profilePhoto?: string;
         }
     ) {
         // Check if user exists
@@ -98,6 +102,10 @@ export class UserService {
             updateData.password = await bcrypt.hash(data.password, 12);
         }
 
+        if (data.profilePhoto) {
+            updateData.profilePhoto = convertDriveLink(data.profilePhoto);
+        }
+
         const updatedUser = await prisma.user.update({
             where: { id: userId },
             data: updateData,
@@ -106,6 +114,7 @@ export class UserService {
                 email: true,
                 name: true,
                 role: true,
+                profilePhoto: true,
                 updatedAt: true,
             },
         });

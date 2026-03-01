@@ -4,6 +4,7 @@ import config from '../../config/index';
 import { AuthenticationError, ConflictError } from '../../utils/errors';
 import { JWTPayload } from '../../types/auth.types';
 import { prisma } from '../../lib/prisma';
+import { convertDriveLink } from '../../utils/url.utils';
 
 export class AuthService {
     /**
@@ -14,6 +15,7 @@ export class AuthService {
         name: string;
         password: string;
         role?: 'ADMIN' | 'LEADER' | 'MEMBER';
+        profilePhoto?: string;
     }) {
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({
@@ -34,12 +36,14 @@ export class AuthService {
                 name: data.name,
                 password: hashedPassword,
                 role: data.role || 'MEMBER',
+                profilePhoto: convertDriveLink(data.profilePhoto),
             },
             select: {
                 id: true,
                 email: true,
                 name: true,
                 role: true,
+                profilePhoto: true,
                 createdAt: true,
             },
         });

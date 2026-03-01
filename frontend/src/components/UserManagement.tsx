@@ -13,6 +13,7 @@ const userSchema = z.object({
     email: z.string().email('Invalid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     role: z.enum(['ADMIN', 'MEMBER']),
+    profilePhoto: z.string().optional(),
 });
 
 type UserForm = z.infer<typeof userSchema>;
@@ -94,8 +95,10 @@ export default function UserManagement({ users, onClose, onUpdate }: UserManagem
                                     className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
-                                            {user.role === 'ADMIN' ? (
+                                        <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center overflow-hidden">
+                                            {user.profilePhoto ? (
+                                                <img src={user.profilePhoto} alt={user.name} className="w-full h-full object-cover" />
+                                            ) : user.role === 'ADMIN' ? (
                                                 <Shield className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                                             ) : (
                                                 <UserIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
@@ -108,8 +111,8 @@ export default function UserManagement({ users, onClose, onUpdate }: UserManagem
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${user.role === 'ADMIN'
-                                                ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
-                                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                                            ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                                             }`}>
                                             {user.role}
                                         </span>
@@ -192,6 +195,22 @@ export default function UserManagement({ users, onClose, onUpdate }: UserManagem
                                 <option value="MEMBER">Member</option>
                                 <option value="ADMIN">Admin</option>
                             </select>
+                        </div>
+
+                        <div>
+                            <label htmlFor="profilePhoto" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Profile Photo (Google Drive Link)
+                            </label>
+                            <input
+                                {...register('profilePhoto')}
+                                type="text"
+                                id="profilePhoto"
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                                placeholder="Paste Google Drive link"
+                            />
+                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Supporting: drive.google.com/file/d/ID/view
+                            </p>
                         </div>
 
                         <div className="flex gap-3 pt-4">

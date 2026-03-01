@@ -6,6 +6,7 @@ export const updateUserSchema = z.object({
         email: z.string().email().optional(),
         password: z.string().min(6).optional(),
         role: z.enum(['ADMIN', 'MEMBER']).optional(),
+        profilePhoto: z.string().optional(),
     }),
 });
 
