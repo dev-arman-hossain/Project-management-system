@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import {
     LayoutDashboard,
     Users,
@@ -59,6 +59,8 @@ export default function Sidebar({ user, isOpen, onClose }: SidebarProps) {
         },
     ];
 
+    const pathname = usePathname();
+
     const filteredNavItems = navItems.filter((item) => {
         if (item.adminOnly && user?.role !== 'ADMIN') return false;
         if (item.leaderOnly && !['ADMIN', 'LEADER'].includes(user?.role || ''))
@@ -83,9 +85,8 @@ export default function Sidebar({ user, isOpen, onClose }: SidebarProps) {
 
             {/* Sidebar */}
             <aside
-                className={`fixed lg:relative left-0 top-0 h-screen w-64 bg-gray-900 dark:bg-gray-950 text-gray-100 transform transition-transform duration-300 ease-in-out z-40 ${
-                    isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-                }`}
+                className={`fixed lg:relative left-0 top-0 h-screen w-64 bg-gray-900 dark:bg-gray-950 text-gray-100 transform transition-transform duration-300 ease-in-out z-40 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                    }`}
             >
                 <div className="flex flex-col h-full">
                     {/* Logo Section */}
@@ -103,19 +104,27 @@ export default function Sidebar({ user, isOpen, onClose }: SidebarProps) {
 
                     {/* Navigation */}
                     <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                        {filteredNavItems.map((item) => (
-                            <button
-                                key={item.label}
-                                onClick={() => handleNavClick(item.href)}
-                                className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition group"
-                            >
-                                <div className="flex items-center gap-3">
-                                    {item.icon}
-                                    <span className="font-medium">{item.label}</span>
-                                </div>
-                                <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition" />
-                            </button>
-                        ))}
+                        {filteredNavItems.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <button
+                                    key={item.label}
+                                    onClick={() => handleNavClick(item.href)}
+                                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
+                                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
+                                            : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                                        }`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-1.5 rounded-lg transition-colors ${isActive ? 'bg-indigo-500' : 'bg-gray-800 group-hover:bg-gray-700'}`}>
+                                            {item.icon}
+                                        </div>
+                                        <span className="font-semibold tracking-wide">{item.label}</span>
+                                    </div>
+                                    {!isActive && <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition" />}
+                                </button>
+                            );
+                        })}
                     </nav>
 
                     {/* User Profile Section */}

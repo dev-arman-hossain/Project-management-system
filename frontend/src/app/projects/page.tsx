@@ -57,15 +57,15 @@ export default function ProjectsPage() {
                 usersAPI.getAll()
             ]);
 
-            const projectsData = projectsRes.data.data.projects;
-            const usersData = usersRes.data.data.users;
+            const projectsData = projectsRes.data.data.projects || [];
+            const usersData = usersRes.data.data.users || [];
 
             setProjects(projectsData);
             setUsers(usersData);
 
             // Update cache
-            if (cache && user) {
-                setCacheData(projectsData, usersData, cache.stats, user.id);
+            if (user) {
+                setCacheData(projectsData, usersData, cache?.stats || null, user.id);
             }
         } catch (error) {
             console.error('Failed to fetch data:', error);
@@ -82,15 +82,15 @@ export default function ProjectsPage() {
                 usersAPI.getAll()
             ]);
 
-            const projectsData = projectsRes.data.data.projects;
-            const usersData = usersRes.data.data.users;
+            const projectsData = projectsRes.data.data.projects || [];
+            const usersData = usersRes.data.data.users || [];
 
             setProjects(projectsData);
             setUsers(usersData);
 
             // Update cache
-            if (cache && user) {
-                setCacheData(projectsData, usersData, cache.stats, user.id);
+            if (user) {
+                setCacheData(projectsData, usersData, cache?.stats || null, user.id);
             }
         } catch (error) {
             console.error('Failed to refresh data:', error);
@@ -101,6 +101,12 @@ export default function ProjectsPage() {
         clearAuth();
         router.push('/login');
     };
+
+    const visibleProjects = (projects || []).filter((project) =>
+        user?.role !== 'MEMBER' ||
+        project.assignedToId === user?.id ||
+        project.createdById === user?.id
+    );
 
     if ((!mounted || loading) && !isCacheValid()) {
         return (
@@ -121,7 +127,7 @@ export default function ProjectsPage() {
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">All Projects</h1>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                            Total: <span className="font-semibold text-gray-900 dark:text-white">{projects.length}</span>
+                            Total: <span className="font-semibold text-gray-900 dark:text-white">{visibleProjects.length}</span>
                         </p>
                     </div>
                     <button
@@ -133,27 +139,21 @@ export default function ProjectsPage() {
                     </button>
                 </div>
 
-                {projects.length === 0 ? (
+                {visibleProjects.length === 0 ? (
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center border border-gray-200 dark:border-gray-700">
                         <FolderKanban className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                         <p className="text-gray-600 dark:text-gray-400">No projects found</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {projects
-                            .filter((project) =>
-                                user?.role !== 'MEMBER' ||
-                                project.assignedToId === user?.id ||
-                                project.createdById === user?.id
-                            )
-                            .map((project) => (
-                                <ProjectCard
-                                    key={project.id}
-                                    project={project}
-                                    onUpdate={fetchData}
-                                    isAdmin={user?.role !== 'MEMBER' || project.createdById === user?.id || project.assignedToId === user?.id}
-                                />
-                            ))}
+                        {visibleProjects.map((project) => (
+                            <ProjectCard
+                                key={project.id}
+                                project={project}
+                                onUpdate={fetchData}
+                                isAdmin={user?.role !== 'MEMBER' || project.createdById === user?.id || project.assignedToId === user?.id}
+                            />
+                        ))}
                     </div>
                 )}
             </div>

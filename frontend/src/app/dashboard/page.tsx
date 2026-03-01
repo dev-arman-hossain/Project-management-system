@@ -61,17 +61,17 @@ export default function DashboardPage() {
                 projectsAPI.getStats(),
             ]);
 
-            const projectsData = projectsRes.data.data.projects;
-            const statsData = statsRes.data.data;
+            const projectsData = projectsRes.data.data.projects || [];
+            const statsData = statsRes.data.data || null;
 
             setProjects(projectsData);
             setStats(statsData);
 
             if (user) {
                 const usersRes = await usersAPI.getAll();
-                const usersData = usersRes.data.data.users;
+                const usersData = usersRes.data.data.users || [];
                 setUsers(usersData);
-                // Update cache with userId
+                // Update cache
                 setCacheData(projectsData, usersData, statsData, user.id);
             }
         } catch (error) {
@@ -88,16 +88,16 @@ export default function DashboardPage() {
                 projectsAPI.getAll(),
                 projectsAPI.getStats(),
             ]);
-            const projectsData = projectsRes.data.data.projects;
-            const statsData = statsRes.data.data;
+            const projectsData = projectsRes.data.data.projects || [];
+            const statsData = statsRes.data.data || null;
             setProjects(projectsData);
             setStats(statsData);
 
             if (user) {
                 const usersRes = await usersAPI.getAll();
-                const usersData = usersRes.data.data.users;
+                const usersData = usersRes.data.data.users || [];
                 setUsers(usersData);
-                // Update cache with userId
+                // Update cache
                 setCacheData(projectsData, usersData, statsData, user.id);
             }
         } catch (error) {
